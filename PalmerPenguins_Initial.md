@@ -10,7 +10,7 @@ theme: darkly
 
 
 
-## Palmer Penguins
+# Palmer Penguins
 
 (*Insert informative blurb here*)
 
@@ -42,4 +42,300 @@ penguins |> head()
 :::
 
 
-By using the `head` function, we can see the first 6 rows of our larger data set. 
+After loading our packages and data, we can use the `head` function to take a peek at the first few rows of our data set.
+
+## Displaying Data
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins |>
+  count(island)
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+# A tibble: 3 × 2
+  island        n
+  <chr>     <int>
+1 Biscoe       36
+2 Dream         3
+3 Torgersen     5
+```
+:::
+:::
+
+
+This simple command allows us to sort our data by count. In this case, R can count how many instances are in each category. Here we can see there are `36` penguins from Biscoe Island, `3` penguins from Dream Island, and `5` penguins from Torgersen Island.
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins |>
+  count(island, species)
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+# A tibble: 5 × 3
+  island    species       n
+  <chr>     <chr>     <int>
+1 Biscoe    Adelie        3
+2 Biscoe    Gentoo       33
+3 Dream     Adelie        1
+4 Dream     Chinstrap     2
+5 Torgersen Adelie        5
+```
+:::
+
+```{.r .cell-code}
+#Dr. D's example
+penguins %>%
+  count(island, species) %>%
+  pivot_wider(names_from = species, values_from = n, values_fill = 0)
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+# A tibble: 3 × 4
+  island    Adelie Gentoo Chinstrap
+  <chr>      <int>  <int>     <int>
+1 Biscoe         3     33         0
+2 Dream          1      0         2
+3 Torgersen      5      0         0
+```
+:::
+:::
+
+
+By using the parameters of both island and species within `count`, we can see how many penguins of each species were found on the islands. The first line shows a simple way of executing the function that creates multiple instances of each island when there is a different species. 
+The second command is Dr. Duryea's example for making a "prettier" version of the table, with separate columns for each species for better legibility.
+
+
+::: {.cell}
+
+```{.r .cell-code}
+library(kableExtra)
+
+#another example from Dr. D
+penguins %>%
+  count(island, species) %>%
+  pivot_wider(names_from = species, values_from = n, values_fill = 0) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+::: {.cell-output-display}
+
+`````{=html}
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> island </th>
+   <th style="text-align:right;"> Adelie </th>
+   <th style="text-align:right;"> Gentoo </th>
+   <th style="text-align:right;"> Chinstrap </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Biscoe </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 33 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Dream </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Torgersen </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+
+:::
+:::
+
+
+An even prettier way to create a readable table is to utilize the `kableExtra` package. This creates a more table-like display with the same columns as the last example and some extra styling.
+
+## Numerical Summaries
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins %>%
+  summarize(mean_bill_length_mm = mean(bill_length_mm))
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+# A tibble: 1 × 1
+  mean_bill_length_mm
+                <dbl>
+1                46.4
+```
+:::
+
+```{.r .cell-code}
+penguins %>%
+  summarize(mean_bill_length_mm = mean(bill_length_mm, na.rm = TRUE))
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+# A tibble: 1 × 1
+  mean_bill_length_mm
+                <dbl>
+1                46.4
+```
+:::
+:::
+
+
+Here, we can summarize one of our numerical values with `summarize()`. If there are values missing from the data, then R won't calculate the solution to your computation, and the result will be NA. To avoid this, we add `na.rm = TRUE` as a parameter.
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins %>%
+  summarize(
+    min_bill_length = min(bill_length_mm, na.rm = TRUE),
+    first_quartile_bill_length = quantile(bill_length_mm, 0.25, na.rm = TRUE),
+    median_bill_length = median(bill_length_mm, na.rm = TRUE),
+    mean_bill_length_mm = mean(bill_length_mm, na.rm = TRUE),
+    third_quartile_bill_length = quantile(bill_length_mm, 0.75, na.rm = TRUE),
+    standard_deviation_bill_length = sd(bill_length_mm, na.rm = TRUE)
+    ) %>%
+  pivot_longer(cols = everything())
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+# A tibble: 6 × 2
+  name                           value
+  <chr>                          <dbl>
+1 min_bill_length                36.2 
+2 first_quartile_bill_length     44.6 
+3 median_bill_length             46.4 
+4 mean_bill_length_mm            46.4 
+5 third_quartile_bill_length     49.1 
+6 standard_deviation_bill_length  4.93
+```
+:::
+:::
+
+
+For more information, we can also find other statistics, like the minimum, maximum, mean, and more from our data. In each of them, we can include `na.rm = TRUE` to make sure R is returning a number and not `NA`.
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins %>%
+  filter(!is.na(bill_length_mm)) |>
+  summarize(
+    min_bill_length = min(bill_length_mm),
+    first_quartile_bill_length = quantile(bill_length_mm, 0.25),
+    median_bill_length = median(bill_length_mm),
+    mean_bill_length_mm = mean(bill_length_mm),
+    third_quartile_bill_length = quantile(bill_length_mm, 0.75),
+    standard_deviation_bill_length = sd(bill_length_mm)
+    ) %>%
+  pivot_longer(cols = everything())
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+# A tibble: 6 × 2
+  name                           value
+  <chr>                          <dbl>
+1 min_bill_length                36.2 
+2 first_quartile_bill_length     44.6 
+3 median_bill_length             46.4 
+4 mean_bill_length_mm            46.4 
+5 third_quartile_bill_length     49.1 
+6 standard_deviation_bill_length  4.93
+```
+:::
+:::
+
+
+An easier way to remove all the missing values while running this analysis is to use a filter before summarizing. By using `!is.na`, we tell the function to include every value that isn't `NA`.
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins %>%
+  filter(!is.na(bill_length_mm)) |>
+  summarize(
+    min_bill_length = min(bill_length_mm),
+    first_quartile_bill_length = quantile(bill_length_mm, 0.25),
+    median_bill_length = median(bill_length_mm),
+    mean_bill_length_mm = mean(bill_length_mm),
+    third_quartile_bill_length = quantile(bill_length_mm, 0.75),
+    standard_deviation_bill_length = sd(bill_length_mm)
+    ) %>%
+  pivot_longer(cols = everything()) |>
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+::: {.cell-output-display}
+
+`````{=html}
+<table class="table table-hover table-striped" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> name </th>
+   <th style="text-align:right;"> value </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> min_bill_length </td>
+   <td style="text-align:right;"> 36.200000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> first_quartile_bill_length </td>
+   <td style="text-align:right;"> 44.550000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> median_bill_length </td>
+   <td style="text-align:right;"> 46.450000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mean_bill_length_mm </td>
+   <td style="text-align:right;"> 46.370455 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> third_quartile_bill_length </td>
+   <td style="text-align:right;"> 49.125000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> standard_deviation_bill_length </td>
+   <td style="text-align:right;"> 4.930379 </td>
+  </tr>
+</tbody>
+</table>
+
+`````
+
+:::
+:::
+
+
+Now that everything is sorted, we can pipe our work into kable like before to make an appealing table.
