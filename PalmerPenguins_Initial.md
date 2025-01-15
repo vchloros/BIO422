@@ -110,8 +110,7 @@ penguins %>%
 :::
 
 
-By using the parameters of both island and species within `count`, we can see how many penguins of each species were found on the islands. The first line shows a simple way of executing the function that creates multiple instances of each island when there is a different species. 
-The second command is Dr. Duryea's example for making a "prettier" version of the table, with separate columns for each species for better legibility.
+By using the parameters of both island and species within `count`, we can see how many penguins of each species were found on the islands. The first line shows a simple way of executing the function that creates multiple instances of each island when there is a different species. The second command is Dr. Duryea's example for making a "prettier" version of the table, with separate columns for each species for better legibility.
 
 
 ::: {.cell}
@@ -338,4 +337,120 @@ penguins %>%
 :::
 
 
-Now that everything is sorted, we can pipe our work into kable like before to make an appealing table.
+Now that everything is sorted, we can pipe our work into a kable command like before to make an appealing table.
+
+## Selecting Columns and Rows
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins |>
+  select(species, island, sex, year)
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+# A tibble: 44 × 4
+   species island sex    year
+   <chr>   <chr>  <chr> <dbl>
+ 1 Gentoo  Biscoe male   2007
+ 2 Gentoo  Biscoe male   2008
+ 3 Gentoo  Biscoe male   2009
+ 4 Gentoo  Biscoe male   2009
+ 5 Gentoo  Biscoe male   2009
+ 6 Gentoo  Biscoe male   2009
+ 7 Gentoo  Biscoe male   2008
+ 8 Gentoo  Biscoe male   2009
+ 9 Gentoo  Biscoe male   2008
+10 Gentoo  Biscoe male   2007
+# ℹ 34 more rows
+```
+:::
+:::
+
+
+Here, we can use the `select()` function to isolate only the columns we're focused on for all of our instances.
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins |>
+  select(species, island, sex, year) |>
+  filter(species == "Chinstrap")
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+# A tibble: 2 × 4
+  species   island sex     year
+  <chr>     <chr>  <chr>  <dbl>
+1 Chinstrap Dream  male    2009
+2 Chinstrap Dream  female  2007
+```
+:::
+:::
+
+
+By piping the result into a filter function, we can see only the species we are interested in, like Chinstrap penguins in this example.
+
+
+::: {.cell}
+
+```{.r .cell-code}
+chinstraps <- penguins |>
+  select(species, island, sex, year) |>
+  filter(species == "Chinstrap") |>
+  select(-species)
+
+chinstraps |>
+  head()
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+# A tibble: 2 × 3
+  island sex     year
+  <chr>  <chr>  <dbl>
+1 Dream  male    2009
+2 Dream  female  2007
+```
+:::
+:::
+
+
+Since we're only working with one species, we can deselect it from our output with `select(-species)` then using another `head()` function to display our results.
+
+## Grouping
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins %>%
+  group_by(species) %>%
+  summarise(
+    mean_bill_depth_mm = mean(bill_depth_mm, na.rm = TRUE),
+    sd_bill_depth_mm = sd(bill_depth_mm, na.rm = TRUE)
+  )
+```
+
+::: {.cell-output .cell-output-stdout}
+```
+# A tibble: 3 × 3
+  species   mean_bill_depth_mm sd_bill_depth_mm
+  <chr>                  <dbl>            <dbl>
+1 Adelie                  17.8            0.935
+2 Chinstrap               18.8            1.41 
+3 Gentoo                  15.2            0.951
+```
+:::
+:::
+
+
+The function `group_by()` allows us to group our data by the species of penguin and subsequently use them to find the mean bill length and depth of each species independently.
+
+Based on that computation, Chinstrap penguins had the largest mean depth compared to the other species but also the largest standard deviation, meaning the given values varied from the mean more widely than the other species. Adelie penguins had the next largest mean bill depth, and Gentoo penguins had the smallest mean bill depth. Both Adelie and Gentoo penguins had similar deviations compared to the Chinstraps.
+
+## Data Visualization

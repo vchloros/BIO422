@@ -338,7 +338,85 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </div>
 </div>
-<p>Now that everything is sorted, we can pipe our work into kable like before to make an appealing table.</p>
+<p>Now that everything is sorted, we can pipe our work into a kable command like before to make an appealing table.</p>
+</section>
+<section id="selecting-columns-and-rows" class="level2">
+<h2 class="anchored" data-anchor-id="selecting-columns-and-rows">Selecting Columns and Rows</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(species, island, sex, year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 44 × 4
+   species island sex    year
+   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;
+ 1 Gentoo  Biscoe male   2007
+ 2 Gentoo  Biscoe male   2008
+ 3 Gentoo  Biscoe male   2009
+ 4 Gentoo  Biscoe male   2009
+ 5 Gentoo  Biscoe male   2009
+ 6 Gentoo  Biscoe male   2009
+ 7 Gentoo  Biscoe male   2008
+ 8 Gentoo  Biscoe male   2009
+ 9 Gentoo  Biscoe male   2008
+10 Gentoo  Biscoe male   2007
+# ℹ 34 more rows</code></pre>
+</div>
+</div>
+<p>Here, we can use the <code>select()</code> function to isolate only the columns we’re focused on for all of our instances.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(species, island, sex, year) <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Chinstrap"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  species   island sex     year
+  &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;  &lt;dbl&gt;
+1 Chinstrap Dream  male    2009
+2 Chinstrap Dream  female  2007</code></pre>
+</div>
+</div>
+<p>By piping the result into a filter function, we can see only the species we are interested in, like Chinstrap penguins in this example.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>chinstraps <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(species, island, sex, year) <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(species <span class="sc">==</span> <span class="st">"Chinstrap"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>species)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>chinstraps <span class="sc">|&gt;</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  island sex     year
+  &lt;chr&gt;  &lt;chr&gt;  &lt;dbl&gt;
+1 Dream  male    2009
+2 Dream  female  2007</code></pre>
+</div>
+</div>
+<p>Since we’re only working with one species, we can deselect it from our output with <code>select(-species)</code> then using another <code>head()</code> function to display our results.</p>
+</section>
+<section id="grouping" class="level2">
+<h2 class="anchored" data-anchor-id="grouping">Grouping</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(species) <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_bill_depth_mm =</span> <span class="fu">mean</span>(bill_depth_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_bill_depth_mm =</span> <span class="fu">sd</span>(bill_depth_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  species   mean_bill_depth_mm sd_bill_depth_mm
+  &lt;chr&gt;                  &lt;dbl&gt;            &lt;dbl&gt;
+1 Adelie                  17.8            0.935
+2 Chinstrap               18.8            1.41 
+3 Gentoo                  15.2            0.951</code></pre>
+</div>
+</div>
+<p>The function <code>group_by()</code> allows us to group our data by the species of penguin and subsequently use them to find the mean bill length and depth of each species independently.</p>
+<p>Based on that computation, Chinstrap penguins had the largest mean depth compared to the other species but also the largest standard deviation, meaning the given values varied from the mean more widely than the other species. Adelie penguins had the next largest mean bill depth, and Gentoo penguins had the smallest mean bill depth. Both Adelie and Gentoo penguins had similar deviations compared to the Chinstraps.</p>
+</section>
+<section id="data-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="data-visualization">Data Visualization</h2>
 </section>
 </section>
 
