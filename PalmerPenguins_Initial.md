@@ -454,3 +454,228 @@ The function `group_by()` allows us to group our data by the species of penguin 
 Based on that computation, Chinstrap penguins had the largest mean depth compared to the other species but also the largest standard deviation, meaning the given values varied from the mean more widely than the other species. Adelie penguins had the next largest mean bill depth, and Gentoo penguins had the smallest mean bill depth. Both Adelie and Gentoo penguins had similar deviations compared to the Chinstraps.
 
 ## Data Visualization
+
+### One Categorical Variable
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = species)) +
+  labs(title ="Counts of Penguin Species",
+       x = "Species", y = "Count")
+```
+
+::: {.cell-output-display}
+![](PalmerPenguins_Initial_files/figure-html/first bar graph-1.png){width=672}
+:::
+:::
+
+
+This plot from Dr. D's examples illustrates the total count of each species of penguin within the data frame. We can see that Gentoo penguins were the most common within the data set, followed by Adelie and then Chinstraps. 
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins |>
+  ggplot() +
+  geom_bar(mapping = aes(x = island)) +
+  labs(
+    title = "Counts of Penguins by Island",
+    x = "Islands"
+  )
+```
+
+::: {.cell-output-display}
+![](PalmerPenguins_Initial_files/figure-html/My bar graph-1.png){width=672}
+:::
+:::
+
+
+I created this plot to display the count of penguins in the data frame based on which island they were from. Most penguins were from Biscoe Island. Torgersen Island had far less penguins but had the second most penguins, and Dream Island had the least amount of penguins.
+
+### One Numerical Variable
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins %>%
+  ggplot() +
+  geom_histogram(mapping = aes(x = bill_length_mm),
+                 color = "white",
+                 fill = "blue"
+                 ) +
+  labs(title ="Distribution of Bill Lengths",
+       x = "Bill Length (mm)", y = "Count")
+```
+
+::: {.cell-output .cell-output-stderr}
+```
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+:::
+
+::: {.cell-output-display}
+![](PalmerPenguins_Initial_files/figure-html/first histogram-1.png){width=672}
+:::
+:::
+
+
+Dr. D's example histogram has the data summarized by bill length. We can observe that the tallest peaks, meaning highest count of penguins, lie between around 45 and 50 mm. 
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins |>
+  ggplot() +
+  geom_boxplot(
+    mapping = aes(x = bill_length_mm), 
+    color = "black",
+    fill = "#8ab0ed"
+  ) +
+  labs(
+    title = "Distribution of Bill Lengths",
+    x = "Bill Length (mm)", y = "Count"
+  )
+```
+
+::: {.cell-output-display}
+![](PalmerPenguins_Initial_files/figure-html/unnamed-chunk-1-1.png){width=672}
+:::
+:::
+
+
+This box plot uses the same data but differentiates the percentiles of the data. Half of all the penguin bill lengths fall between the two sides of the box, with the lower 25% of values extending out from the box on the left, and the upper 25% on the right. The dark line at the center represents the median. While the histogram can give you a good idea of the most common value(s) for a variable at a quick glance, you can use a box plot to more easily visualize different statistics that you might be interested in depending on the data you're looking at and what you're using it for. 
+
+### Two Numerical Variables
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins %>%
+  ggplot() +
+  geom_point(mapping = aes(x = bill_depth_mm, y = bill_length_mm)) +
+  labs(title = "Bill Depth and Length",
+       x = "Bill Depth (mm)",
+       y = "Bill Length (mm)")
+```
+
+::: {.cell-output-display}
+![](PalmerPenguins_Initial_files/figure-html/first two num var-1.png){width=672}
+:::
+:::
+
+With two numerical variables, a scatter plot is the most common method of displaying the data. This one compares the bill length of each penguin to the bill depth, both measured in millimeters. You can observe a slight positive correlation at the first half of the scatterplot that becomes more chaotic as bill depth increases.
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins |>
+  ggplot() +
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g)) +
+  labs(title = "Flipper Length and Body Mass",
+       x = "Flipper Length (mm)",
+       y = "Body Mass (g)")
+```
+
+::: {.cell-output-display}
+![](PalmerPenguins_Initial_files/figure-html/my two num var-1.png){width=672}
+:::
+:::
+
+
+My scatterplot is a visualization of flipper length compared to body mass. Compared to the previous plot, there seems to be a much stronger positive correlation between the two variables. 
+
+### Two Categorical Variables
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins %>%
+  ggplot() +
+  geom_bar(mapping = aes(x = island, fill = species)) +
+  labs(title = "Species by Island",
+       x = "Island",
+       y = "Species")
+```
+
+::: {.cell-output-display}
+![](PalmerPenguins_Initial_files/figure-html/first two cat var-1.png){width=672}
+:::
+:::
+
+
+With two categorical variables, we use a variation of bar graphs that adds coloration to differentiate the second variable. In this graph, we see again that Biscoe Island had the most penguin observations out of the three, but now we also know most of those instances were Gentoo penguins followed by a few Adelie penguins. Dream Island had both Adelie and Chinstrap penguins, and it was the only island to have Chinstraps. Lastly, Torgersen Island only had observations of Adelie penguins and no other species.
+
+### Categorical and Numerical Variables
+
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins %>%
+  ggplot() +
+  geom_boxplot(mapping = aes(x = bill_depth_mm, y = species)) +
+  labs(title = "Bill Depth by Species",
+       x = "Bill Depth (mm)",
+       y = "")
+```
+
+::: {.cell-output-display}
+![](PalmerPenguins_Initial_files/figure-html/first cat and num plot-1.png){width=672}
+:::
+:::
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins %>%
+  ggplot() +
+  geom_histogram(mapping = aes(x = bill_depth_mm)) +
+  facet_wrap(~species, ncol = 1) +
+  labs(title = "Bill Depth by Species",
+       x = "Bill Depth (mm)",
+       y = "")
+```
+
+::: {.cell-output .cell-output-stderr}
+```
+`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+:::
+
+::: {.cell-output-display}
+![](PalmerPenguins_Initial_files/figure-html/second cat and num plot-1.png){width=672}
+:::
+:::
+
+::: {.cell}
+
+```{.r .cell-code}
+penguins |>
+  ggplot() +
+  geom_boxplot(
+    mapping = aes(
+      x = species, 
+      y = body_mass_g)
+    ) +
+  labs(
+    title = "Body Mass by Species",
+    x = "Species", y = "Body Mass (g)"
+  )
+```
+
+::: {.cell-output-display}
+![](PalmerPenguins_Initial_files/figure-html/my plot-1.png){width=672}
+:::
+:::
+
+
+This graph I created displays the different 
