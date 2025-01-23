@@ -12,6 +12,8 @@ theme: darkly
 
 The Palmer Penguins data set is a widely used asset for learning to display, manipulate, and summarize data. With observations of penguins on selected islands between 2007-2009, anyone looking to use it has a variety of categorical and numerical data to work with. Here's I'll be working through a Tidy Analysis to get familiar with several fundamental capabilities in R, including functions like `filter()` and `group_by()` as well as visualizing data with `ggplot()`.
 
+## Displaying Data
+
 ```{r setup}
 #| message: false
 
@@ -23,8 +25,6 @@ penguins |> head()
 ```
 
 After loading our packages and data, we can use the `head` function to take a peek at the first few rows of our data set.
-
-## Displaying Data
 
 ```{r first count}
 penguins |>
