@@ -302,7 +302,13 @@ penguins %>%
   theme_light()
 ```
 
-These plots have a combination of more complex functions to create more complicated graphs. 
+These plots have a combination of more complex functions to create more complicated graphs. Faceting allows us to develop a way to display three categorical variables (sex, island, and species) alongside two numerical variables (flipper length and bill length). 
+The faceting was created using the function `facet_grid(island ~ sex)`. The columns of faceting are labelled male and female to separate the sexes of the penguins, and the faceting rows are labelled by island to distinguish the origins of each penguin. Within the plots, each point is colored and has been assigned a specific shape by using `color = species` within the aesthetics of `geom_point` and `geom_smooth` functions and `shape = sex` within only geom_point.
+Lastly, Flipper length and bill length are assigned to the two axis within the aesthetics of the plots.
+
+Through the whole plot, we can come to some conclusions about the data. The abundance of Gentoo penguins is clear. It seems that their flipper and bill length experience a slight positive correlation within males, but female flipper length remains relatively consistent while bill length varies. 
+Adelie penguins have far less observations, but there is a slight positive correlation with females on Torgersen island. Other instances have only one or two observations, and making conclusions based on them would be prone to inaccuracy. 
+Chinstrap penguins only have two observations, one male and one female, so again, conclusions here are probably unreliable. 
 
 ```{r my advanced plot}
 penguins %>%
@@ -324,6 +330,79 @@ penguins %>%
   scale_color_manual(
     values = c("#3342f2", "#418b43", "#8b2a52")
   )
+```
+
+For my variation, I created facets that separate the data by species and year and changed the x axis from bill length to body mass. I also changed the colors using a different theme and the `scale_color_manual` function. The shape differentiation remains the same, separated by sex. 
+Gentoo penguins saw positive correlations between flipper length and body mass for each of the three years the penguins were observed. Adelie penguins only had one or two observations in the first two years, but observations in 2009 had enough to suggest another positive correlation, although both body mass and bill length are smaller than the general Gentoo population.
+Chinstrap penguins again only have their two instances, but you can still get relevant information from them. You can see how there was a year of no Chinstrap observations in 2008, and only one observations in the other two years. 
+
+### Final Question
+
+Can we figure out the average bill length for our penguins, and if that number exceeds 45mm through these graphs? To do this, we can backtrack to our singular numerical value.
+
+```{r bill length histo}
+penguins |>
+  filter(!is.na(sex)) |>
+  ggplot() +
+  geom_histogram(mapping = aes(x = bill_length_mm),
+                 color = "white",
+                 fill = "blue"
+                 ) +
+  labs(title ="Distribution of Bill Lengths",
+       x = "Bill Length (mm)", y = "Count")
+```
+
+This histogram, our original one, includes all of the penguin observations. It displays a high concentration of observations right after the 45mm mark, and more observations seem to populate on to the right of that point, exceeding 45mm, than to the left of it, suggesting most penguins have bills longer than 45mm.
+
+```{r bill length faceting}
+penguins |>
+  filter(!is.na(sex)) |>
+  ggplot() +
+  geom_histogram(mapping = aes(x = bill_length_mm, fill = sex)
+                 ) +
+  labs(title ="Distribution of Bill Lengths",
+       x = "Bill Length (mm)", y = "Count"
+       ) +
+  facet_grid(sex ~ .)
+```
+
+Here, I added faceting to the plot to separate the bill lengths by sexes. For females, we can see the high concentration of observations right around 45mm, and more under 45mm than there are above 45mm. For males, most bill lengths exceed 45mm.
+
+```{r}
+penguins |>
+  filter(!is.na(sex)) |>
+  ggplot() +
+  geom_boxplot(
+    mapping = aes(x = bill_length_mm), 
+    color = "black",
+    fill = "#8ab0ed"
+  ) +
+  labs(
+    title = "Distribution of Bill Lengths",
+    x = "Bill Length (mm)", y = "Count"
+  )
+```
+
+A box plot makes the average a bit easier to visualize. The median lies ahead of 45mm by a fair amount, and most of the interquartile range (IQR) lies beyond that point as well. Based on this, we can assume that the average would be beyond 45mm.
+
+```{r}
+penguins |>
+  filter(!is.na(sex)) |>
+  ggplot() +
+  geom_boxplot(
+    mapping = aes(x = bill_length_mm, fill = sex)
+  ) +
+  labs(
+    title = "Distribution of Bill Lengths",
+    x = "Bill Length (mm)", y = "Count"
+  ) +
+  facet_grid(sex ~ .)
+```
+
+When separate by sex, the results vary. Again, females seem to have smaller bills on average, and their median seems to lie at about 45mm. 
+
+```{r}
+mean(penguins$bill_length_mm)
 ```
 
 
