@@ -10,7 +10,7 @@ theme: darkly
 
 # Palmer Penguins
 
-(*Insert informative blurb here*)
+The Palmer Penguins data set is a widely used asset for learning to display, manipulate, and summarize data. With observations of penguins on selected islands between 2007-2009, anyone looking to use it has a variety of categorical and numerical data to work with. Here's I'll be working through a Tidy Analysis to get familiar with several fundamental capabilities in R, including functions like `filter()` and `group_by()` as well as visualizing data with `ggplot()`.
 
 ```{r setup}
 #| message: false
@@ -399,10 +399,19 @@ penguins |>
   facet_grid(sex ~ .)
 ```
 
-When separate by sex, the results vary. Again, females seem to have smaller bills on average, and their median seems to lie at about 45mm. 
+When separate by sex, the results vary. Again, females seem to have smaller bills on average, with most of their IQR extending below 45mm, and their median seems to lie at about 45mm. The IQR for males, on the other hand, far exceeds 45mm, similar to what the histograms showed. 
 
-```{r}
+```{r mean bill length}
 mean(penguins$bill_length_mm)
 ```
 
+The true average bill length for all the penguins is just over 45mm, which we surmised from our numerical plots. The initial histogram had the most observations concentrated just after 45mm, and the IQR of the box plot
 
+```{r males and females}
+penguins |>
+  group_by(sex) |>
+  summarise(
+    mean_bill_length_mm = mean(bill_length_mm, na.rm = TRUE))
+```
+
+By splitting the two by sex, we can see that, like our other observations, the average bill lengths for females was just under 45mm while the males on average were over. Through plot analysis, we can gain a general impression of the "shape" of the data and estimate statistics like average with ease.
