@@ -1,0 +1,10 @@
+---
+title: "BirdBaths"
+format: html
+editor: visual
+author: "Vinny Chloros"
+---
+
+## Introduction
+
+This bird bath data from Cleary et al, 2016 is a collaborative effort between researchers and citizen scientists to track activity in bird baths throughout Australia. Because of the arid conditions in most of the region, bird baths might prove to be a vital resource for birds

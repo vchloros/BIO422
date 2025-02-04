@@ -1,0 +1,264 @@
+---
+title: "BayesianActivity"
+format: html
+editor: visual
+author: Vinny Chloros
+---
+
+# Learning Bayesian Analysis
+
+## The Basics
+
+```{r}
+
+```
+
+
+## Influence of the Prior
+
+### Setting Prior
+
+```{r libraries}
+library(ggplot2)
+library(tidyverse)
+```
+
+Priors are used to represent how we expect data to look. For this practice analysis, I anticipate a proportion of 60%, meaning I expect 60% of the frogs sampled to have tested positive for chytrid. To specify this, I update the alpha and beta objects to whole numbers that create a proportion of 60% when divided. The code below creates a graph representing that expectation.
+
+```{r prior}
+#Update alpha and beta here
+##number of prior observed successes
+alpha <- 6
+##number of prior observed failures
+beta <- 4
+
+#Fewer points results in more jagged pictures
+grid_pts <- 500
+
+#Create prior distribution
+my_dists <- tibble(
+  pi = seq(0, 1, length.out = grid_pts), #possible proportions
+  prior_prob = dbeta(pi, alpha, beta) #prior probability
+)
+
+#Plot prior distribution
+my_dists %>%
+  ggplot() + 
+  geom_area(aes(x = pi, y = prior_prob), 
+            fill = "purple", alpha = 0.4) + 
+  geom_line(aes(x = pi, y = prior_prob),
+            linetype = "dashed") + 
+  labs(
+    title = "Prior Distribution",
+    x = "π",
+    y = ""
+  )
+```
+
+### Import Frog Data
+
+```{r data}
+#| message: false
+
+initial_frogs <- read_csv(
+  "https://raw.githubusercontent.com/mcduryea/Evolution-Simulations/refs/heads/main/chytrid_small.csv"
+  )
+
+num_frogs <- initial_frogs %>%
+  nrow()
+
+num_pos <- initial_frogs %>%
+  filter(chytrid == "y") %>%
+  nrow()
+
+print(paste0("Of the ", num_frogs, 
+             " frogs observed, the number positive for Chytrid Fungus was ", 
+             num_pos, "."))
+```
+
+### Compare to Posterior
+
+Now, with an updated prior and our data ready to go, we can create a posterior to show how our prior stacks up with the actual data.
+
+```{r posterior}
+#Calculate posterior probability
+my_dists <- my_dists %>%
+  mutate(
+    #Compute likelihood using binomial distribution
+    likelihood = choose(num_frogs, num_pos)*pi^num_pos*(1 - pi)^(num_frogs - num_pos),
+    #Compute posterior as likelihood*prior
+    post_prob = likelihood*prior_prob,
+    #Normalize posterior
+    post_prob_normalized = post_prob/(sum(post_prob)*1/grid_pts)
+    )
+
+#Plot posterior
+my_dists %>%
+  ggplot() + 
+  geom_area(aes(x = pi, y = prior_prob, fill = "prior"),
+            alpha = 0.4) + 
+  geom_line(aes(x = pi, y = prior_prob),
+            linetype = "dashed") + 
+  geom_area(aes(x = pi, y = post_prob_normalized, fill = "posterior"), 
+            alpha = 0.7) + 
+  geom_line(aes(x = pi, y = post_prob_normalized),
+            linetype = "dashed") +
+  labs(
+    title = "Prior and Posterior Distributions",
+    x = "π",
+    y = ""
+  ) + 
+  scale_fill_manual(values = c("prior" = "purple", "posterior" = "orange"))
+```
+
+This posterior shows seemingly more precise estimation of the proportion of infected frogs. The curve is much steeper, with more values resting under the curve than in our prior or previous posterior. Giving our expectations for how the data would form allows the posterior to "build off" that estimation and give us a more precise look at where our true proportion is likely to lie.
+
+
+## Influence of Data
+
+```{r more data prior}
+##number of prior observed successes
+alpha <- 6
+##number of prior observed failures
+beta <- 4
+
+#Fewer points results in more jagged pictures
+grid_pts <- 500
+
+#Create prior distribution
+my_dists <- tibble(
+  pi = seq(0, 1, length.out = grid_pts), #possible proportions
+  prior_prob = dbeta(pi, alpha, beta) #prior probability
+)
+
+#Plot prior distribution
+my_dists %>%
+  ggplot() + 
+  geom_area(aes(x = pi, y = prior_prob), 
+            fill = "purple", alpha = 0.4) + 
+  geom_line(aes(x = pi, y = prior_prob),
+            linetype = "dashed") + 
+  labs(
+    title = "Prior Distribution",
+    x = "π",
+    y = ""
+  )
+```
+
+
+```{r new data}
+#| message: false
+
+new_frogs <- read_csv(
+  "https://raw.githubusercontent.com/mcduryea/Evolution-Simulations/refs/heads/main/chytrid_remaining.csv"
+  )
+
+num_new_frogs <- new_frogs %>%
+  nrow()
+
+num_new_pos <- new_frogs %>%
+  filter(chytrid == "y") %>%
+  nrow()
+
+print(paste0("Of the ", num_new_frogs, 
+             " new frogs observed and processed, the number positive for Chytrid Fungus was ", 
+             num_new_pos, "."))
+```
+
+```{r new posterior}
+#Calculate posterior probability
+my_dists <- my_dists %>%
+  mutate(
+    #Compute likelihood using binomial distribution
+    likelihood = choose(num_new_frogs, num_new_pos)*pi^num_new_pos*(1 - pi)^(num_new_frogs - num_new_pos),
+    #Compute posterior as likelihood*prior
+    post_prob = likelihood*prior_prob,
+    #Normalize posterior
+    post_prob_normalized = post_prob/(sum(post_prob)*1/grid_pts)
+    )
+
+#Plot posterior
+my_dists %>%
+  ggplot() + 
+  geom_area(aes(x = pi, y = prior_prob, fill = "prior"),
+            alpha = 0.4) + 
+  geom_line(aes(x = pi, y = prior_prob),
+            linetype = "dashed") + 
+  geom_area(aes(x = pi, y = post_prob_normalized, fill = "posterior"), 
+            alpha = 0.7) + 
+  geom_line(aes(x = pi, y = post_prob_normalized),
+            linetype = "dashed") +
+  labs(
+    title = "Prior and Posterior Distributions",
+    x = "π",
+    y = ""
+  ) + 
+  scale_fill_manual(values = c("prior" = "purple", "posterior" = "orange"))
+```
+
+More data using the same prior allowed for an even sharper curve in our posterior. This seems to make the final estimation even more certain since the model can pull from many more samples.
+
+
+## Combined Influence
+
+```{r final prior}
+##number of prior observed successes
+alpha <- 600
+##number of prior observed failures
+beta <- 400
+
+#Fewer points results in more jagged pictures
+grid_pts <- 500
+
+#Create prior distribution
+my_dists <- tibble(
+  pi = seq(0, 1, length.out = grid_pts), #possible proportions
+  prior_prob = dbeta(pi, alpha, beta) #prior probability
+)
+
+#Plot prior distribution
+my_dists %>%
+  ggplot() + 
+  geom_area(aes(x = pi, y = prior_prob), 
+            fill = "purple", alpha = 0.4) + 
+  geom_line(aes(x = pi, y = prior_prob),
+            linetype = "dashed") + 
+  labs(
+    title = "Prior Distribution",
+    x = "π",
+    y = ""
+  )
+```
+
+```{r final posterior}
+#Calculate posterior probability
+my_dists <- my_dists %>%
+  mutate(
+    #Compute likelihood using binomial distribution
+    likelihood = choose(num_new_frogs, num_new_pos)*pi^num_new_pos*(1 - pi)^(num_new_frogs - num_new_pos),
+    #Compute posterior as likelihood*prior
+    post_prob = likelihood*prior_prob,
+    #Normalize posterior
+    post_prob_normalized = post_prob/(sum(post_prob)*1/grid_pts)
+    )
+
+#Plot posterior
+my_dists %>%
+  ggplot() + 
+  geom_area(aes(x = pi, y = prior_prob, fill = "prior"),
+            alpha = 0.4) + 
+  geom_line(aes(x = pi, y = prior_prob),
+            linetype = "dashed") + 
+  geom_area(aes(x = pi, y = post_prob_normalized, fill = "posterior"), 
+            alpha = 0.7) + 
+  geom_line(aes(x = pi, y = post_prob_normalized),
+            linetype = "dashed") +
+  labs(
+    title = "Prior and Posterior Distributions",
+    x = "π",
+    y = ""
+  ) + 
+  scale_fill_manual(values = c("prior" = "purple", "posterior" = "orange"))
+```
+
+With a larger alpha and beta, a higher certainty of proportion is created. Based on the more precise prior, the posterior similarly has a high...
