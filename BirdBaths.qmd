@@ -7,4 +7,38 @@ author: "Vinny Chloros"
 
 ## Introduction
 
-This bird bath data from Cleary et al, 2016 is a collaborative effort between researchers and citizen scientists to track activity in bird baths throughout Australia. Because of the arid conditions in most of the region, bird baths might prove to be a vital resource for birds
+This bird bath data from Cleary et al, 2016 is a collaborative effort between researchers and citizen scientists to track activity in bird baths throughout Australia. Because of the arid conditions in most of the region, bird baths might prove to be a vital resource for birds who rely on them as a water source. 
+
+```{r initial data}
+#| message: false
+tuesdata <- tidytuesdayR::tt_load('2021-08-31')
+
+bird_baths <- tuesdata$bird_baths
+```
+
+```{r data split}
+#| message: false
+
+library(tidymodels)
+
+birds_splits <- initial_split(bird_baths, prop = 0.5)
+
+exploratory_data <- training(birds_splits)
+test_data <- testing(birds_splits)
+
+```
+
+## Exploratory Data Analysis (EDA)
+
+As a first step, let's take a quick peek into the data to see what our values look like at a glance.
+
+```{r start exploring}
+#| message: false
+library(kableExtra)
+
+exploratory_data |>
+  head() |>
+  kbl() |>
+  kable_styling()
+```
+
