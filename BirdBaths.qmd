@@ -5,9 +5,11 @@ editor: visual
 author: "Vinny Chloros"
 ---
 
-## Introduction
+## Abstract
 
-This bird bath data from Cleary et al, 2016 is a collaborative effort between researchers and citizen scientists to track activity in bird baths throughout Australia. Because of the arid conditions in most of the region, bird baths might prove to be a vital resource for birds who rely on them as a water source. 
+This bird bath data from Cleary et al, 2016 is a collaborative effort between researchers and citizen scientists to track activity in bird baths throughout Australia. Because of the arid conditions in most of the region, bird baths might prove to be a vital resource for birds who rely on them as a water source.
+
+## Introduction
 
 ```{r initial data}
 #| message: false
@@ -28,6 +30,15 @@ test_data <- testing(birds_splits)
 
 ```
 
+## Question(s)
+
+1. Does bird bath usage vary by season and/or region? 
+
+2. Is there a bias for spotting in urban regions since more birders are looking? 
+
+
+3. How does climate factor into bird bath usage?
+
 ## Exploratory Data Analysis (EDA)
 
 As a first step, let's take a quick peek into the data to see what our values look like at a glance.
@@ -39,6 +50,142 @@ library(kableExtra)
 exploratory_data |>
   head() |>
   kbl() |>
-  kable_styling()
+  kable_styling(bootstrap_options = "striped")
+```
+
+At this point I noticed that many of the inputs for `bird_count` were 0. This struck me as odd. I tried a few instances of `count()` functions to get a feel for how prevalent birds were within different years and environments.
+
+```{r counts}
+exploratory_data |>
+  count(survey_year) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+
+exploratory_data |>
+  count(urban_rural) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+
+exploratory_data |>
+  count(bioregions) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+```
+
+
+Around this point, I tried to isolate only the instances with at least one bird sighting, since I wasn't sure of the significance of the observations with 0 for `bird_count`.
+
+```{r filtered count}
+exploratory_data |>
+  filter(bird_count > 0) |>
+  count(bioregions) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+```
+
+I realized that this table wasn't actually giving me the number of birds seen in these regions, but instead just the number of instances that birds were found. Within `bird_count`, the actual number of birds seen could vary from 0 to >100.
+
+Here, I figured out how the data was actually sorted within the data frame: there is an instance for each possible bird species within the overarching habitats and dates. To find what I'm actually interested in, I'll have to summarize the number of birds observed within each specific instance (bioregion + urban/rural + year).
+
+```{r summary}
+exploratory_data |>
+  filter(bird_count > 0) |>
+  group_by(survey_year) |>
+  summarize(
+    sum_bird_count <- sum(bird_count, na.rm = TRUE)
+  ) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+
+exploratory_data |>
+  filter(bird_count > 0) |>
+  group_by(urban_rural) |>
+  summarize(
+    sum_bird_count <- sum(bird_count, na.rm = TRUE)
+  ) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+
+exploratory_data |>
+  filter(bird_count > 0) |>
+  group_by(bioregions) |>
+  summarize(
+    sum_bird_count <- sum(bird_count, na.rm = TRUE)
+  ) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+```
+
+Now, I finally have the initial stats that I'm looking for! You can see the total number of birds found between the years surveyed, between rural and urban areas, and different regions. 
+
+Now, I'll combine some of these variables so we can see how bird spottings differ when we summarize both year *and* region. 
+
+```{r year and region}
+exploratory_data |>
+  filter(bird_count > 0) |>
+  select(survey_year, bioregions, bird_count) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped") |>
+  kable_paper() |>
+  scroll_box(height = "300px")
+```
+
+I can get more particular and filter out the results with only one bird sighting. 
+
+```{r more than one bird}
+exploratory_data |>
+  filter(bird_count > 1) |>
+  select(survey_year, bioregions, bird_count) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped") |>
+  kable_paper() |>
+  scroll_box(height = "300px")
+```
+
+This code came up with a huge list of regions and years that come up with NA. To try to see more, I filtered out values that returned NA... 
+
+```{r more birds no NA}
+exploratory_data |>
+  filter(bird_count > 1) |>
+  filter(!is.na(bioregions)) |>
+  filter(!is.na(survey_year)) |>
+  select(survey_year, bioregions, bird_count) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+```
+
+And there were no results! It seems like most instances of more than one bird sighting in the data aren't associated with most of the identifying information.
+
+If I sort by `bird_type`, maybe we can find some of those lots values.
+
+```{r}
+exploratory_data |>
+  filter(bird_count > 1) |>
+  select(bird_type, survey_year, bioregions, bird_count) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped") |>
+  kable_paper() |>
+  scroll_box(height = "300px")
+```
+
+Here they are! It seems like there are many instances of birds spotted, but the regions and survey year were unknown.
+
+Now, back to the investigation, I'll try to see if I can summarize the total birds spotted by the year and region of the observations.
+
+```{r regions and year}
+#| message = false
+
+exploratory_data |>
+  filter(bird_count > 0) |>
+  filter(!is.na(bioregions)) |>
+  group_by(survey_year, bioregions) |>
+  summarize(
+    sum_bird_count <- sum(bird_count, na.rm = TRUE)
+  ) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped") |>
+  kable_paper() |>
+  scroll_box(height = "300px")
+
 ```
 
