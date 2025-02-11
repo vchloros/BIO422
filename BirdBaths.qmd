@@ -1,8 +1,10 @@
 ---
-title: "BirdBaths"
+title: "Australian Bird Baths"
 format: html
 editor: visual
 author: "Vinny Chloros"
+code-fold: show
+theme: cyborg
 ---
 
 ## Abstract
@@ -36,10 +38,11 @@ test_data <- testing(birds_splits)
 
 2. Is there a bias for spotting in urban regions since more birders are looking? 
 
-
 3. How does climate factor into bird bath usage?
 
 ## Exploratory Data Analysis (EDA)
+
+### Understanding Data Format
 
 As a first step, let's take a quick peek into the data to see what our values look like at a glance.
 
@@ -126,7 +129,6 @@ exploratory_data |>
   select(survey_year, bioregions, bird_count) |>
   kbl() |>
   kable_styling(bootstrap_options = "striped") |>
-  kable_paper() |>
   scroll_box(height = "300px")
 ```
 
@@ -138,7 +140,6 @@ exploratory_data |>
   select(survey_year, bioregions, bird_count) |>
   kbl() |>
   kable_styling(bootstrap_options = "striped") |>
-  kable_paper() |>
   scroll_box(height = "300px")
 ```
 
@@ -156,36 +157,69 @@ exploratory_data |>
 
 And there were no results! It seems like most instances of more than one bird sighting in the data aren't associated with most of the identifying information.
 
-If I sort by `bird_type`, maybe we can find some of those lots values.
+If I sort by `bird_type`, maybe we can find some of those lost values.
 
-```{r}
+```{r lost birds}
 exploratory_data |>
-  filter(bird_count > 1) |>
+  filter(bird_count > 0) |>
   select(bird_type, survey_year, bioregions, bird_count) |>
   kbl() |>
   kable_styling(bootstrap_options = "striped") |>
-  kable_paper() |>
   scroll_box(height = "300px")
 ```
 
-Here they are! It seems like there are many instances of birds spotted, but the regions and survey year were unknown.
+Here they are! It seems like there are many instances of birds spotted, but the regions and survey year were unknown. In further plots, since I'm focused on examining how region variables like region, urban status, and season/year, I'll be excluding observations that lack information for all three of them.
 
-Now, back to the investigation, I'll try to see if I can summarize the total birds spotted by the year and region of the observations.
+### Starting Plots
 
-```{r regions and year}
-#| message = false
+Now, back to the investigation, I'll try to see if I can summarize the total birds spotted by the region of they were spotted in.
+
+```{r regions}
+#| message: false
+
+exploratory_data |>
+  filter(!is.na(bioregions)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = bioregions, fill = bioregions)) +
+  labs(title = "Bird Count by Bioregion",
+       x = "Number of Birds",
+       y = "Region") +
+  scale_fill_discrete() +
+  guides(fill = "none")
 
 exploratory_data |>
   filter(bird_count > 0) |>
   filter(!is.na(bioregions)) |>
-  group_by(survey_year, bioregions) |>
+  group_by(bioregions) |>
   summarize(
     sum_bird_count <- sum(bird_count, na.rm = TRUE)
   ) |>
   kbl() |>
   kable_styling(bootstrap_options = "striped") |>
-  kable_paper() |>
   scroll_box(height = "300px")
 
+```
+
+```{r}
+#| echo:false
+
+exploratory_data |>
+  summarize(sum(bird_count, na.rm = TRUE))
+```
+
+
+Success! From this graph, we can see that the largest amount of birds were seen in the Sydney Basin, which makes up around 20% of all the observations. In comparison, South Eastern Queensland (SE Queensland) has the next largest amount of sightings with just over half the amount of birds (~11%). Brigalow Belt South and Victorian Volcano Plain were almost tied for the least amount of birds, only differing by 2 sightings. 
+
+```{r year}
+exploratory_data |>
+  filter(!is.na(survey_year)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = survey_year)) +
+  labs(title = "Bird Count by Bioregion",
+       x = "Number of Birds",
+       y = "Survey Year") +
+  guides(fill = "none")
 ```
 
