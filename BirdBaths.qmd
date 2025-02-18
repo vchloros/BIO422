@@ -291,6 +291,7 @@ exploratory_data |>
   guides(fill = "none")
 ```
 
+By comparing bioregions by year, there is a clear difference in distribution. In 2014, in winter, there were only a 5 bioregions that birds were observed in. Sydney Basin observations made up the majority of the 2014 bird count with over 700 birds tracked. In contrast, 2015 featured observations of birds from every bioregion. The Sydney Basin is accompanied by SE Queensland and SE Highlands as the most common bioregions, all with around 200 observations each.
 
 
 ```{r region and urbanity}
@@ -308,6 +309,8 @@ exploratory_data |>
   guides(fill = "none")
 ```
 
+Comparing rural to urban observations across bioregions shows that all bioregions are accounted for in both groups. Urban areas feature Sydney Basin as the most common region by far (just under 800 observations) compared to SE Queensland, the next most common, with only around 300 observations. This might be caused by the city of Sydney, Australia's most populous city, lying within the basin. This might support the idea the more birdwatchers around leads to more observations.
+
 ```{r urbanity and year}
 exploratory_data |>
   filter(!is.na(urban_rural)) |>
@@ -322,6 +325,8 @@ exploratory_data |>
   scale_fill_manual(values = c("#8EE5EE", "#EEAD0E")) +
   guides(fill = "none")
 ```
+
+Here, I compared urbanness to the survey year of observations. Rural areas had less total sightings than urban areas between both years. In rural areas saw more bird observations in summer than winter, but urban areas saw more observations in winter than in summer.
 
 ```{r all variables}
 exploratory_data |>
@@ -338,4 +343,14 @@ exploratory_data |>
   scale_fill_discrete() +
   guides(fill = "none")
 ```
+
+This plot encompasses all of the variables used in analysis so far. The observations between both years have a similar distribution as the previous graph comparing bioregion and year: 2014 had birds only observed within 5 regions while 2015 had observations in every region. This is true in both rural and urban areas. Between the two, it again appears that urban areas have a larger proportion of bird observations in general
+
+## Hypotheses
+
+1. Bird bath usage is limited to a few bioregions in winter and varies more widely in summer due to a greater need across regions for water as becomes more scarce.
+
+2. Urban areas have more observations than rural areas because of the number of birdwatchers available.
+
+3. Arid regions like the Sydney Basin see more bird bath usage because of their dry conditions.
 
