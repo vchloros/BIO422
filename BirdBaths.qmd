@@ -7,6 +7,16 @@ code-fold: show
 theme: cyborg
 ---
 
+```{r required packages}
+#| message: false
+
+library(tidyverse)
+library(tidymodels)
+library(kableExtra)
+library(patchwork)
+```
+
+
 ## Abstract
 
 This bird bath data from Cleary et al, 2016 is a collaborative effort between researchers and citizen scientists to track activity in bird baths throughout Australia. Because of the arid conditions in most of the region, bird baths might prove to be a vital resource for birds who rely on them as a water source. 
@@ -24,9 +34,6 @@ bird_baths <- tuesdata$bird_baths
 
 ```{r data split}
 #| message: false
-
-library(tidymodels)
-
 birds_splits <- initial_split(bird_baths, prop = 0.5)
 
 exploratory_data <- training(birds_splits)
@@ -49,9 +56,6 @@ test_data <- testing(birds_splits)
 As a first step, let's take a quick peek into the data to see what our values look like at a glance.
 
 ```{r start exploring}
-#| message: false
-library(kableExtra)
-
 exploratory_data$survey_year <- as.character(exploratory_data$survey_year)
 
 exploratory_data |>
@@ -170,7 +174,7 @@ exploratory_data |>
   kable_styling(bootstrap_options = "striped") |>
   scroll_box(height = "300px")
 ```
-
+</br>
 Here they are! It seems like there are many instances of birds spotted, but the regions and survey year were unknown. In further plots, since I'm focused on examining how region variables like region, urban status, and season/year, I'll be excluding observations that lack information for all three of them.
 
 ### Starting Plots, Single Variable by Count
@@ -190,6 +194,8 @@ exploratory_data |>
        y = "Region") +
   scale_fill_discrete() +
   guides(fill = "none")
+
+EDA_bioregion
 
 exploratory_data |>
   filter(bird_count > 0) |>
@@ -237,15 +243,21 @@ exploratory_data |>
   ) |>
   kbl() |>
   kable_styling(bootstrap_options = "striped")
-
-##exploratory_data |>
-##  filter(!is.na(survey_year)) |>
-##  summarize(sum(bird_count, na.rm = TRUE))
 ```
 
-Between the two years, 2014 saw more birds than 2015 by a slim margin. 2014 sightings represent 52% of the sightings while 2015 represents the other 47%. Despite the different seasons, it seems like the total amount of birds did not vary by much.
-
 ```{r}
+#| output: false
+#| echo: false
+
+exploratory_data |>
+  filter(!is.na(survey_year)) |>
+  summarize(sum(bird_count, na.rm = TRUE))
+```
+
+
+Between the two years, 2014 saw more birds than 2015 by a slim margin. 2014 sightings represent 54% of the sightings while 2015 represents the other 46%. Despite the different seasons, it seems like the total amount of birds did not vary by much.
+
+```{r urbanness}
 exploratory_data |>
   filter(!is.na(urban_rural)) |>
   filter(bird_count > 0) |>
@@ -291,7 +303,7 @@ exploratory_data |>
   guides(fill = "none")
 ```
 
-By comparing bioregions by year, there is a clear difference in distribution. In 2014, in winter, there were only a 5 bioregions that birds were observed in. Sydney Basin observations made up the majority of the 2014 bird count with over 700 birds tracked. In contrast, 2015 featured observations of birds from every bioregion. The Sydney Basin is accompanied by SE Queensland and SE Highlands as the most common bioregions, all with around 200 observations each.
+By comparing bioregions by year, there is a clear difference in distribution. In 2014, in winter, there were only a 5 bioregions that observations took place. Sydney Basin observations made up the majority of the 2014 bird count with over 700 birds tracked (around half of all 2014 observations). In contrast, 2015 featured observations of birds from every bioregion. The Sydney Basin is accompanied by SE Queensland and SE Highlands as the most common bioregions, with around 200 observations each.
 
 
 ```{r region and urbanity}
@@ -354,3 +366,115 @@ This plot encompasses all of the variables used in analysis so far. The observat
 
 3. Arid regions like the Sydney Basin see more bird bath usage because of their dry conditions.
 
+## Methodology
+
+Now, I can use these hypotheses to analyze the full data set.
+
+### Poking Around, Single Variables
+
+```{r full data}
+bird_baths$survey_year <- as.character(bird_baths$survey_year)
+
+bird_baths |>
+  head() |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+```
+
+```{r full regions}
+EDA_bioregion <- exploratory_data |>
+  filter(!is.na(bioregions)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = bioregions, fill = bioregions)) +
+  labs(title = "EDA Bird Count by Bioregion",
+       x = "Number of Birds",
+       y = "") +
+  theme(axis.text.y = element_blank()) +
+  scale_fill_discrete() +
+  guides(fill = "none")
+
+full_bioregion <- bird_baths |>
+  filter(!is.na(bioregions)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = bioregions, fill = bioregions)) +
+  labs(title = "Total Bird Count by Bioregion",
+       x = "Number of Birds",
+       y = "Region") +
+  scale_fill_discrete() +
+  guides(fill = "none")
+
+(full_bioregion + EDA_bioregion)
+
+bird_baths |>
+  filter(bird_count > 0) |>
+  filter(!is.na(bioregions)) |>
+  group_by(bioregions) |>
+  summarize(
+    sum_bird_count <- sum(bird_count, na.rm = TRUE)
+  ) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped") |>
+  scroll_box(height = "300px")
+```
+
+```{r total region count}
+#| echo: false
+#| message: false
+#| output: false
+
+bird_baths |>
+  filter(!is.na(bioregions)) |>
+  summarize(sum(bird_count, na.rm = TRUE))
+```
+
+The total distribution of birds by region is extremely similar to that of the EDA data. Sydney Basin is again the region with the largest sum of bird observations, making up about 35% of the data (very similar to the ~37% of the EDA data). SE Queensland is the runner-up once again with around 21% of the data, one point off from the previous ~22%.
+
+```{r}
+full_year <- bird_baths |>
+  filter(!is.na(survey_year)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = survey_year, fill = survey_year)) +
+  labs(title = "Total Bird Count by Year",
+       x = "Number of Birds",
+       y = "Survey Year") +
+  guides(fill = "none") +
+  scale_fill_manual(values = c("#8EE5EE", "#EEAD0E"))
+
+EDA_year <- exploratory_data |>
+  filter(!is.na(survey_year)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = survey_year, fill = survey_year)) +
+  labs(title = "EDA Bird Count by Year",
+       x = "Number of Birds",
+       y = "") +
+  theme(axis.text.y = element_blank()) +
+  guides(fill = "none") +
+  scale_fill_manual(values = c("#8EE5EE", "#EEAD0E"))
+
+(full_year + EDA_year)
+
+bird_baths |>
+  filter(bird_count > 0) |>
+  filter(!is.na(survey_year)) |>
+  group_by(survey_year) |>
+  summarize(
+    sum_bird_count <- sum(bird_count, na.rm = TRUE)
+  ) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+```
+
+```{r}
+#| output: false
+#| echo: false
+
+bird_baths |>
+  filter(!is.na(survey_year)) |>
+  summarize(sum(bird_count, na.rm = TRUE))
+```
+
+Again, the difference between the number of observations in each year reflects what was observed within the EDA. More birds were observed in the winter of 2014 (~52%) than the summer of 2015 (~48%). Compared to the 54/46 split in the EDA, they are 
