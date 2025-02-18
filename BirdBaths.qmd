@@ -9,9 +9,11 @@ theme: cyborg
 
 ## Abstract
 
-This bird bath data from Cleary et al, 2016 is a collaborative effort between researchers and citizen scientists to track activity in bird baths throughout Australia. Because of the arid conditions in most of the region, bird baths might prove to be a vital resource for birds who rely on them as a water source.
+This bird bath data from Cleary et al, 2016 is a collaborative effort between researchers and citizen scientists to track activity in bird baths throughout Australia. Because of the arid conditions in most of the region, bird baths might prove to be a vital resource for birds who rely on them as a water source. 
 
 ## Introduction
+
+Bird baths are a common outdoor fixture used to provide a small pool of water for birds (and other backyard visitors) to use. It's not uncommon to see birds using a bird bath, but the scientific understanding for how, when, and why they use baths, at the time of this study, was not fully understood. To remedy this, a group of researchers used citizen scientists (i.e. members of the public collaborating with professionals) to collect data on birds they observed using bird baths throughout different areas of Australia. The study was conceptualized by researchers at Deakin University and Griffith University, and the data was collected over two four-week periods: one in 2014 in winter, and the other in 2015 in summer. In the data set, observations are classified by the year they took place, whether the location was urban or rural based on human population size, what region it took place in (delineated by a mixture of location, climate, and other environmental factors), bird type (species), and bird count. 
 
 ```{r initial data}
 #| message: false
@@ -34,11 +36,11 @@ test_data <- testing(birds_splits)
 
 ## Question(s)
 
-1. Does bird bath usage vary by season and/or region? 
+1.  Does bird bath usage vary by season and/or region?
 
-2. Is there a bias for spotting in urban regions since more birders are looking? 
+2.  Are more birds spotted in urban or rural locations?
 
-3. How does climate factor into bird bath usage?
+3.  How does climate factor into bird bath usage?
 
 ## Exploratory Data Analysis (EDA)
 
@@ -49,6 +51,8 @@ As a first step, let's take a quick peek into the data to see what our values lo
 ```{r start exploring}
 #| message: false
 library(kableExtra)
+
+exploratory_data$survey_year <- as.character(exploratory_data$survey_year)
 
 exploratory_data |>
   head() |>
@@ -75,7 +79,6 @@ exploratory_data |>
   kable_styling(bootstrap_options = "striped")
 ```
 
-
 Around this point, I tried to isolate only the instances with at least one bird sighting, since I wasn't sure of the significance of the observations with 0 for `bird_count`.
 
 ```{r filtered count}
@@ -86,7 +89,7 @@ exploratory_data |>
   kable_styling(bootstrap_options = "striped")
 ```
 
-I realized that this table wasn't actually giving me the number of birds seen in these regions, but instead just the number of instances that birds were found. Within `bird_count`, the actual number of birds seen could vary from 0 to >100.
+I realized that this table wasn't actually giving me the number of birds seen in these regions, but instead just the number of instances that birds were found. Within `bird_count`, the actual number of birds seen could vary from 0 to \>100.
 
 Here, I figured out how the data was actually sorted within the data frame: there is an instance for each possible bird species within the overarching habitats and dates. To find what I'm actually interested in, I'll have to summarize the number of birds observed within each specific instance (bioregion + urban/rural + year).
 
@@ -119,9 +122,9 @@ exploratory_data |>
   kable_styling(bootstrap_options = "striped")
 ```
 
-Now, I finally have the initial stats that I'm looking for! You can see the total number of birds found between the years surveyed, between rural and urban areas, and different regions. 
+Now, I finally have the initial stats that I'm looking for! You can see the total number of birds found between the years surveyed, between rural and urban areas, and different regions.
 
-Now, I'll combine some of these variables so we can see how bird spottings differ when we summarize both year *and* region. 
+Now, I'll combine some of these variables so we can see how bird spottings differ when we summarize both year *and* region.
 
 ```{r year and region}
 exploratory_data |>
@@ -131,8 +134,8 @@ exploratory_data |>
   kable_styling(bootstrap_options = "striped") |>
   scroll_box(height = "300px")
 ```
-
-I can get more particular and filter out the results with only one bird sighting. 
+</br>
+I can get more particular and filter out the results with only one bird sighting.
 
 ```{r more than one bird}
 exploratory_data |>
@@ -142,8 +145,8 @@ exploratory_data |>
   kable_styling(bootstrap_options = "striped") |>
   scroll_box(height = "300px")
 ```
-
-This code came up with a huge list of regions and years that come up with NA. To try to see more, I filtered out values that returned NA... 
+</br>
+This code came up with a huge list of regions and years that come up with NA. To try to see more, I filtered out values that returned NA...
 
 ```{r more birds no NA}
 exploratory_data |>
@@ -170,7 +173,7 @@ exploratory_data |>
 
 Here they are! It seems like there are many instances of birds spotted, but the regions and survey year were unknown. In further plots, since I'm focused on examining how region variables like region, urban status, and season/year, I'll be excluding observations that lack information for all three of them.
 
-### Starting Plots
+### Starting Plots, Single Variable by Count
 
 Now, back to the investigation, I'll try to see if I can summarize the total birds spotted by the region of they were spotted in.
 
@@ -201,25 +204,138 @@ exploratory_data |>
 
 ```
 
-```{r}
-#| echo:false
+```{r regions total}
+#| echo: false
+#| message: false
+#| output: false
 
 exploratory_data |>
+  filter(!is.na(bioregions)) |>
   summarize(sum(bird_count, na.rm = TRUE))
 ```
-
-
-Success! From this graph, we can see that the largest amount of birds were seen in the Sydney Basin, which makes up around 20% of all the observations. In comparison, South Eastern Queensland (SE Queensland) has the next largest amount of sightings with just over half the amount of birds (~11%). Brigalow Belt South and Victorian Volcano Plain were almost tied for the least amount of birds, only differing by 2 sightings. 
+</br>
+Success! From this graph, we can see that the largest amount of birds were seen in the Sydney Basin, which makes up around 37% of all the observations. In comparison, South Eastern Queensland (SE Queensland) has the next largest amount of sightings with just over half the amount of birds (~22% of the data). Brigalow Belt South and Victorian Volcano Plain were almost tied for the least amount of birds, only differing by 2 sightings (both around 2%).
 
 ```{r year}
 exploratory_data |>
   filter(!is.na(survey_year)) |>
   filter(bird_count > 0) |>
   ggplot() +
-  geom_col(aes(x = bird_count, y = survey_year)) +
-  labs(title = "Bird Count by Bioregion",
+  geom_col(aes(x = bird_count, y = survey_year, fill = survey_year)) +
+  labs(title = "Bird Count by Year",
        x = "Number of Birds",
        y = "Survey Year") +
+  guides(fill = "none") +
+  scale_fill_manual(values = c("#8EE5EE", "#EEAD0E"))
+
+exploratory_data |>
+  filter(bird_count > 0) |>
+  filter(!is.na(survey_year)) |>
+  group_by(survey_year) |>
+  summarize(
+    sum_bird_count <- sum(bird_count, na.rm = TRUE)
+  ) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+
+##exploratory_data |>
+##  filter(!is.na(survey_year)) |>
+##  summarize(sum(bird_count, na.rm = TRUE))
+```
+
+Between the two years, 2014 saw more birds than 2015 by a slim margin. 2014 sightings represent 52% of the sightings while 2015 represents the other 47%. Despite the different seasons, it seems like the total amount of birds did not vary by much.
+
+```{r}
+exploratory_data |>
+  filter(!is.na(urban_rural)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = urban_rural, fill = urban_rural)) +
+  labs(title = "Bird Count in Urban and Rural Areas",
+       x = "Number of Birds",
+       y = "") +
+  guides(fill = "none") +
+  scale_fill_manual(values = c("#A2CD5A", "#CDAA7D"))
+
+exploratory_data |>
+  filter(bird_count > 0) |>
+  filter(!is.na(urban_rural)) |>
+  group_by(urban_rural) |>
+  summarize(
+    sum_bird_count <- sum(bird_count, na.rm = TRUE)
+  ) |>
+  kbl() |>
+  kable_styling(bootstrap_options = "striped")
+
+##exploratory_data |>
+##  filter(!is.na(urban_rural)) |>
+##  summarize(sum(bird_count, na.rm = TRUE))
+```
+
+Most of the bird bath sightings were in urban regions, making up 60% of the total sightings, while rural sightings made up the other 40%. Based on this, there might be some evidence that urban areas experienced more sightings, but further analysis would be needed for further support.
+
+### Further Analysis, Multiple Variables Against Count
+
+```{r region and year}
+exploratory_data |>
+  filter(!is.na(bioregions)) |>
+  filter(!is.na(survey_year)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = bioregions, fill = bioregions)) +
+  labs(title = "Bird Count by Bioregion and Year",
+       x = "Number of Birds",
+       y = "Region") +
+  facet_grid(. ~ survey_year) +
+  scale_fill_discrete() +
+  guides(fill = "none")
+```
+
+
+
+```{r region and urbanity}
+exploratory_data |>
+  filter(!is.na(urban_rural)) |>
+  filter(!is.na(bioregions)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = bioregions, fill = bioregions)) +
+  labs(title = "Bird Count by Bioregion and Urbanness",
+       x = "Number of Birds",
+       y = "Region") +
+  facet_grid(. ~ urban_rural) +
+  scale_fill_discrete() +
+  guides(fill = "none")
+```
+
+```{r urbanity and year}
+exploratory_data |>
+  filter(!is.na(urban_rural)) |>
+  filter(!is.na(survey_year)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = survey_year, fill = survey_year)) +
+  labs(title = "Bird Count by Survey Year and Urbanness",
+       x = "Number of Birds",
+       y = "Survey Year") +
+  facet_grid(. ~ urban_rural) +
+  scale_fill_manual(values = c("#8EE5EE", "#EEAD0E")) +
+  guides(fill = "none")
+```
+
+```{r all variables}
+exploratory_data |>
+  filter(!is.na(bioregions)) |>
+  filter(!is.na(survey_year)) |>
+  filter(!is.na(urban_rural)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = bioregions, fill = bioregions)) +
+  labs(title = "Bird Count by All Variables",
+       x = "Number of Birds",
+       y = "Region") +
+  facet_grid(urban_rural ~ survey_year) +
+  scale_fill_discrete() +
   guides(fill = "none")
 ```
 
