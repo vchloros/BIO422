@@ -2,7 +2,16 @@
 title: "Australian Bird Baths"
 format: html
 editor: visual
-author: "Vinny Chloros"
+author: 
+  - name: Vinny Chloros
+    email: vinny.chloros@snhu.edu
+    affiliations: 
+      - name: Southern New Hampshire University
+format: html
+editor: visual
+date: 2/4/2025
+date-modified: today
+date-format: long
 code-fold: show
 theme: cyborg
 ---
