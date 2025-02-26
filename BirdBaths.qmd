@@ -478,6 +478,22 @@ exploratory_data |>
 ```
 
 
+
+```{r}
+bird_baths |>
+  filter(!is.na(urban_rural)) |>
+  filter(!is.na(bioregions)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = bioregions, fill = bioregions)) +
+  labs(title = "Bird Count by Bioregion and Urbanness",
+       x = "Number of Birds",
+       y = "Region") +
+  facet_grid(. ~ urban_rural) +
+  scale_fill_discrete() +
+  guides(fill = "none")
+```
+
 ### Seasonal Variability
 
 ```{r}
@@ -527,6 +543,22 @@ bird_baths |>
 ```
 
 Again, the difference between the number of observations in each year reflects what was observed within the EDA. More birds were observed in the winter of 2014 (~52%) than the summer of 2015 (~48%). Compared to the 54/46 split in the EDA, they are almost identical. 
+
+```{r}
+bird_baths |>
+  filter(!is.na(bioregions)) |>
+  filter(!is.na(survey_year)) |>
+  filter(bird_count > 0) |>
+  ggplot() +
+  geom_col(aes(x = bird_count, y = bioregions, fill = bioregions)) +
+  labs(title = "Bird Count by Bioregion and Year",
+       x = "Number of Birds",
+       y = "Region") +
+  facet_grid(. ~ survey_year) +
+  scale_fill_discrete() +
+  guides(fill = "none")
+```
+
 
 ## Conclusions
 
