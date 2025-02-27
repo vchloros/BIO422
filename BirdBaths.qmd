@@ -13,6 +13,7 @@ date-format: long
 code-fold: show
 bibliography: birdbath_references_biblatex.bib
 csl: apa.csl
+toc: true
 theme: cyborg
 ---
 
@@ -287,10 +288,6 @@ exploratory_data |>
   ) |>
   kbl() |>
   kable_styling(bootstrap_options = "striped")
-
-##exploratory_data |>
-##  filter(!is.na(urban_rural)) |>
-##  summarize(sum(bird_count, na.rm = TRUE))
 ```
 
 Most of the bird bath sightings were in urban regions, making up 60% of the total sightings, while rural sightings made up the other 40%. Based on this, there might be some evidence that urban areas experienced more sightings, but further analysis would be needed for further support.
@@ -487,7 +484,8 @@ bird_baths |>
   kable_styling(bootstrap_options = "striped")
 ```
 </br>
-Like bioregions, the plot of urban and rural observations is highly similar to the one made in the EDA. Urban observations make up about 60% of the observations while 
+Like bioregions, the plot of urban and rural observations is almost identical to the one made in the EDA. Urban observations make up about 60% of the observations while rural observations are about 40%. This perfectly matches the proportions seen in the EDA. 
+
 ```{r}
 #| echo: false
 #| message: false
@@ -498,22 +496,16 @@ exploratory_data |>
   summarize(sum(bird_count, na.rm = TRUE))
 ```
 
-
+I can do another statistical test to see if this difference in proportions is significant using the number of urban observances compared to the total number of observances.
 
 ```{r}
-bird_baths |>
-  filter(!is.na(urban_rural)) |>
-  filter(!is.na(bioregions)) |>
-  filter(bird_count > 0) |>
-  ggplot() +
-  geom_col(aes(x = bird_count, y = bioregions, fill = bioregions)) +
-  labs(title = "Bird Count by Bioregion and Urbanness",
-       x = "Number of Birds",
-       y = "Region") +
-  facet_grid(. ~ urban_rural) +
-  scale_fill_discrete() +
-  guides(fill = "none")
+urban_results <- prop.test(x = 3344, n = 5545, p = 0.5, correct = FALSE)
+
+urban_results
+
+urban_results$p.value
 ```
+This proportion test does confirm that the proportion of urban observances is statistically significant with a p-value of about 3.57e-53.
 
 ### Seasonal Variability
 
@@ -565,6 +557,16 @@ bird_baths |>
 
 Again, the difference between the number of observations in each year reflects what was observed within the EDA. More birds were observed in the winter of 2014 (~52%) than the summer of 2015 (~48%). Compared to the 54/46 split in the EDA, they are almost identical. 
 
+I conducted another proportion test to see if the variation of bird counts was statistically significant.
+
+```{r}
+year_results <- prop.test(x = 2904, n = 5545, p = 0.5, correct = FALSE)
+
+year_results
+```
+The results show a p-value of 0.0004, meaning that the difference in bird counts between the two groups is statistically significant.
+
+
 ```{r}
 bird_baths |>
   filter(!is.na(bioregions)) |>
@@ -591,7 +593,7 @@ Other areas with high bird counts differ from the Sydney Basin. The SE Highlands
 
 ### Urban Birders
 
-### Influence of Climate
+### Influence of Climate between Season and Bioregion
 
 
 ## References
