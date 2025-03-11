@@ -568,6 +568,9 @@ The results show a p-value of 0.0004, meaning that the difference in bird counts
 
 
 ```{r}
+#| eval: false
+#| echo: false
+
 bird_baths |>
   filter(!is.na(bioregions)) |>
   filter(!is.na(survey_year)) |>
@@ -587,14 +590,37 @@ bird_baths |>
 
 ### Arid Regions
 
-Based data from the Interim Biogeographic Regionalisation for Australia (IBRA) that designates the different bioregions of the country, the Sydney Basin is described as having "desiccated plateaus" and "skeletal soils, sands, and podzolics" [-@RefWorks:2023ibra]. Desiccated means dried or having had water removed while "skeletal" when used in terms of soil or other ground material means that its largely made of rock fragments [@RefWorks:2019skeletal]. Based on these factors, we can assume that the Sydney Basin is unlikely to have many available water features. Bird baths thus create a reliable source of water for many birds living in the region. 
+Both the EDA and the actual data analysis seemed to agree that total bird count varies significantly between different regions. My original hypothesis for this was that the aridity of regions contributed to high bird counts because birds would have less natural water sources and instead rely on bird baths placed by humans. To have a point of reference, I looked into data from the Interim Biogeographic Regionalisation for Australia (IBRA) report from the Australian government which designates the different bioregions of the country.
+
+According to IBRA7, the latest version, the Sydney Basin is described as having "desiccated plateaus" and "skeletal soils, sands, and podzolics" [-@RefWorks:2023ibra]. Desiccated means dried or having had water removed while "skeletal" when used in terms of soil or other ground material means that its largely made of rock fragments [@RefWorks:2019skeletal]. Based on these factors, we can assume that the Sydney Basin is unlikely to have many available water features. Bird baths thus create a reliable source of water for many birds living in the region. 
 
 Other areas with high bird counts differ from the Sydney Basin. The SE Highlands and the NSW North Coast are described as humid by IBRA but also host different woodlands, rainforests, or wetlands [-@RefWorks:2023ibra]. The higher temperatures of these areas might make bird baths convenient water sources, but they might play a smaller role for them than they do for birds in more arid areas.
 
 ### Urban Birders
 
+My second hypothesis was that urban regions in the original data set would make up a larger proportion of observations since more human observers would be present to witness birds using bird baths. The analysis supported this hypothesis and showed that the difference in proportion between urban and rural observations was significant.
+
+(Compare observations to iNaturalist & eBird figures)
+
+In addition to that metric, I also used visualization of Australia's bioregions and compared them to the most populated cities.
+
+[![IBRA7 Bioregions [-@RefWorks:2023ibra]](ibra-regions.jpg)](https://www.dcceew.gov.au/sites/default/files/env/pages/5b3d2d31-2355-4b60-820c-e370572b2520/files/ibra-regions.pdf)
+
+Here is the national division of Australia's bioregions according to the IBRA7. Some of the most populace cities are labeled in the image, like Sydney in it's eponymous basin and Brisbane in SE Queensland. 
+
+As a comparison, I used figures based on data from iNaturalist and eBird to compare how common bird observations were across different areas of Australia. Both maps were created from data collected by both on-going projects between 2014 and 2015
+
+::: {layout-ncol=2}
+
+![eBird Map [-@eBird]](eBirdMap.png)
+
+![iNaturalist Map [-@iNat]](iNaturalistMap.png)
+
+:::
+
 ### Influence of Climate between Season and Bioregion
 
+(Research migration patterns? or behvior variation between locations & season)
 
 ## References
 

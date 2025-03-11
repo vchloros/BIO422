@@ -164,7 +164,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 26, 2025</p>
+      <p class="date-modified">March 10, 2025</p>
     </div>
   </div>
     
@@ -33327,7 +33327,7 @@ sample estimates:
 </div>
 </div>
 <p>Again, the difference between the number of observations in each year reflects what was observed within the EDA. More birds were observed in the winter of 2014 (~52%) than the summer of 2015 (~48%). Compared to the 54/46 split in the EDA, they are almost identical.</p>
-<p>I conducted another performance test to see if the variation of bird counts was statistically significant.</p>
+<p>I conducted another proportion test to see if the variation of bird counts was statistically significant.</p>
 <div class="cell">
 <details open="">
 <summary>Code</summary>
@@ -33349,40 +33349,54 @@ sample estimates:
 0.5237151 </code></pre>
 </div>
 </div>
-<div class="cell">
-<details open="">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>bird_baths <span class="sc">|&gt;</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(bioregions)) <span class="sc">|&gt;</span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(survey_year)) <span class="sc">|&gt;</span></span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(bird_count <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">x =</span> bird_count, <span class="at">y =</span> bioregions, <span class="at">fill =</span> bioregions)) <span class="sc">+</span></span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bird Count by Bioregion and Year"</span>,</span>
-<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Number of Birds"</span>,</span>
-<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Region"</span>) <span class="sc">+</span></span>
-<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> survey_year) <span class="sc">+</span></span>
-<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_discrete</span>() <span class="sc">+</span></span>
-<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<p><img src="BirdBaths_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
+<p>The results show a p-value of 0.0004, meaning that the difference in bird counts between the two groups is statistically significant.</p>
 </section>
 </section>
 <section id="conclusions" class="level2">
 <h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
 <section id="arid-regions" class="level3">
 <h3 class="anchored" data-anchor-id="arid-regions">Arid Regions</h3>
-<p>Based data from the Interim Biogeographic Regionalisation for Australia (IBRA) that designates the different bioregions of the country, the Sydney Basin is described as having “desiccated plateaus” and “skeletal soils, sands, and podzolics” <span class="citation" data-cites="RefWorks:2023ibra">(<a href="#ref-RefWorks:2023ibra" role="doc-biblioref">2023</a>)</span>. Desiccated means dried or having had water removed while “skeletal” when used in terms of soil or other ground material means that its largely made of rock fragments <span class="citation" data-cites="RefWorks:2019skeletal">(<a href="#ref-RefWorks:2019skeletal" role="doc-biblioref">Agriculture Victoria, 2019</a>)</span>. Based on these factors, we can assume that the Sydney Basin is unlikely to have many available water features. Bird baths thus create a reliable source of water for many birds living in the region.</p>
+<p>Both the EDA and the actual data analysis seemed to agree that total bird count varies significantly between different regions. My original hypothesis for this was that the aridity of regions contributed to high bird counts because birds would have less natural water sources and instead rely on bird baths placed by humans. To have a point of reference, I looked into data from the Interim Biogeographic Regionalisation for Australia (IBRA) report from the Australian government which designates the different bioregions of the country.</p>
+<p>According to IBRA7, the latest version, the Sydney Basin is described as having “desiccated plateaus” and “skeletal soils, sands, and podzolics” <span class="citation" data-cites="RefWorks:2023ibra">(<a href="#ref-RefWorks:2023ibra" role="doc-biblioref">2023</a>)</span>. Desiccated means dried or having had water removed while “skeletal” when used in terms of soil or other ground material means that its largely made of rock fragments <span class="citation" data-cites="RefWorks:2019skeletal">(<a href="#ref-RefWorks:2019skeletal" role="doc-biblioref">Agriculture Victoria, 2019</a>)</span>. Based on these factors, we can assume that the Sydney Basin is unlikely to have many available water features. Bird baths thus create a reliable source of water for many birds living in the region.</p>
 <p>Other areas with high bird counts differ from the Sydney Basin. The SE Highlands and the NSW North Coast are described as humid by IBRA but also host different woodlands, rainforests, or wetlands <span class="citation" data-cites="RefWorks:2023ibra">(<a href="#ref-RefWorks:2023ibra" role="doc-biblioref">2023</a>)</span>. The higher temperatures of these areas might make bird baths convenient water sources, but they might play a smaller role for them than they do for birds in more arid areas.</p>
 </section>
 <section id="urban-birders" class="level3">
 <h3 class="anchored" data-anchor-id="urban-birders">Urban Birders</h3>
+<p>My second hypothesis was that urban regions in the original data set would make up a larger proportion of observations since more human observers would be present to witness birds using bird baths. The analysis supported this hypothesis and showed that the difference in proportion between urban and rural observations was significant.</p>
+<p>(Compare observations to iNaturalist &amp; eBird figures)</p>
+<p>In addition to that metric, I also used visualization of Australia’s bioregions and compared them to the most populated cities.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://www.dcceew.gov.au/sites/default/files/env/pages/5b3d2d31-2355-4b60-820c-e370572b2520/files/ibra-regions.pdf"><img src="ibra-regions.jpg" class="img-fluid figure-img"></a></p>
+<figcaption class="figure-caption">IBRA7 Bioregions <span class="citation" data-cites="RefWorks:2023ibra">(<a href="#ref-RefWorks:2023ibra" role="doc-biblioref">2023</a>)</span></figcaption>
+</figure>
+</div>
+<p>Here is the national division of Australia’s bioregions according to the IBRA7. Some of the most populace cities are labeled in the image, like Sydney in it’s eponymous basin and Brisbane in SE Queensland.</p>
+<p>As a comparison, I used figures based on data from iNaturalist and eBird to compare how common bird observations were across different areas of Australia. Both maps were created from data collected by both on-going projects between 2014 and 2015</p>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="eBirdMap.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">eBird Map <span class="citation" data-cites="eBird">(<a href="#ref-eBird" role="doc-biblioref">2024</a>)</span></figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="iNaturalistMap.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">iNaturalist Map <span class="citation" data-cites="iNat">(<a href="#ref-iNat" role="doc-biblioref">2025</a>)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="influence-of-climate-between-season-and-bioregion" class="level3">
 <h3 class="anchored" data-anchor-id="influence-of-climate-between-season-and-bioregion">Influence of Climate between Season and Bioregion</h3>
+<p>(Research migration patterns? or behvior variation between locations &amp; season)</p>
 </section>
 </section>
 <section id="references" class="level2">
@@ -33391,8 +33405,14 @@ sample estimates:
 <div id="ref-RefWorks:2019skeletal" class="csl-entry" role="listitem">
 Agriculture Victoria. (2019). <em>Skeletal</em>. Victorian Resources Online. <a href="https://vro.agriculture.vic.gov.au/dpi/vro/wimregn.nsf/pages/natres_soil_eastwimm_skeletal">https://vro.agriculture.vic.gov.au/dpi/vro/wimregn.nsf/pages/natres_soil_eastwimm_skeletal</a>
 </div>
+<div id="ref-eBird" class="csl-entry" role="listitem">
+Auer, T., Baker, S., Barry, J., Charnoky, M., Curtis, J., Davies, I., Davis, C., Downie, I., Fink, D., Fredericks, T., Ganger, J., Gerbracht, J., Hanks, C., Hochachka, W., Iliff, M., Imani, J., Jordan, A., Levatich, T., Ligocki, S., … Wood, C. (2024). <em>EOD – eBird observation dataset</em>. <span>Cornell Lab of Ornithology</span>; The Global Biodiversity Information Facility. <a href="https://doi.org/10.15468/aomfnb">https://doi.org/10.15468/aomfnb</a>
+</div>
 <div id="ref-RefWorks:2023ibra" class="csl-entry" role="listitem">
-IBRA. (2023). <em>IBRA regional descriptors</em>. <span>Australian Department of Climate Change, Energy, the Environment and Water</span>. <a href="https://arcg.is/1Sz4e8">https://arcg.is/1Sz4e8</a>
+Australian Department of Climate Change, Energy, the Environment and Water. (2023). <em>IBRA regional descriptors</em>. <a href="https://arcg.is/1Sz4e8">https://arcg.is/1Sz4e8</a>
+</div>
+<div id="ref-iNat" class="csl-entry" role="listitem">
+iNaturalist Contributors, iNaturalist. (2025). <em>iNaturalist research-grade observations</em>. The Global Biodiversity Information Facility. <a href="https://doi.org/10.15468/DL.TZYK9D">https://doi.org/10.15468/DL.TZYK9D</a>
 </div>
 </div>
 </section>
