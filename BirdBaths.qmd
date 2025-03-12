@@ -600,15 +600,13 @@ Other areas with high bird counts differ from the Sydney Basin. The SE Highlands
 
 My second hypothesis was that urban regions in the original data set would make up a larger proportion of observations since more human observers would be present to witness birds using bird baths. The analysis supported this hypothesis and showed that the difference in proportion between urban and rural observations was significant.
 
-(Compare observations to iNaturalist & eBird figures)
-
-In addition to that metric, I also used visualization of Australia's bioregions and compared them to the most populated cities.
+In addition to that metric, I wanted to include a visualization of Australia's bioregions and compare them to the most populated cities.
 
 [![IBRA7 Bioregions [-@RefWorks:2023ibra]](ibra-regions.jpg)](https://www.dcceew.gov.au/sites/default/files/env/pages/5b3d2d31-2355-4b60-820c-e370572b2520/files/ibra-regions.pdf)
 
-Here is the national division of Australia's bioregions according to the IBRA7. Some of the most populace cities are labeled in the image, like Sydney in it's eponymous basin and Brisbane in SE Queensland. 
+Here is the national division of Australia's bioregions according to the IBRA7. Some of the most populated cities are labeled in the image, like Sydney in it's eponymous basin and Brisbane in SE Queensland. 
 
-As a comparison, I used figures based on data from iNaturalist and eBird to compare how common bird observations were across different areas of Australia. Both maps were created from data collected by both on-going projects between 2014 and 2015
+In addition, I referenced figures based on data from iNaturalist and eBird, other large-scale collaborative projects dependent on individual observations, to compare how common bird observations were across different areas of Australia. Both maps were created from data collected by citizen scientists in Australia of birds (not specifically bird bath usage) between 2014 and 2015.
 
 ::: {layout-ncol=2}
 
@@ -618,9 +616,17 @@ As a comparison, I used figures based on data from iNaturalist and eBird to comp
 
 :::
 
+The larger and darker circles on each map represent higher concentrations of observations. The largest cities in particular are visible on the iNaturalist map based on these circles, with the three largest ones on the east coast being Brisbane, Sydney, and Melbourne while following the coast clockwise. These locations correlate to large bird counts in their respective bioregions: SE Queensland for Brisbane, the Sydney Basin for Sydney, and, to a lesser extent, the SE Coastal Plain for Melbourne. eBird has a similar distribution, with most observations concentrated on the east coast of the country, but there are a greater number of large circles throughout the region. This may represent some of the less popular but still urban or suburban regions of the area and may contribute to the bird counts of regions like the SE Highlands that neighbor both Melbourne and Sydney.
+
+Overall, there does seem to be a bias in observations in highly populated areas. Instead of deducing that most birds happen to be in areas with large human populations, the fact that these observations are from citizen scientists could suggest that a good part of these observations are incidental i.e. made when participants came across birds in day-to-day activities rather than seeking them out in more obscure locations. Therefore, using this data to make any broad conclusions about birds in more remote areas, like the desert-like regions of western side of the country, would be inappropriate. Recognizing these factors when choosing data is an important key to starting a robust analysis.
+
 ### Influence of Climate between Season and Bioregion
 
 (Research migration patterns? or behvior variation between locations & season)
+
+### Final Thoughts
+
+
 
 ## References
 
