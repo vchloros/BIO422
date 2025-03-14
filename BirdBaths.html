@@ -124,6 +124,7 @@ div.csl-indent {
   <li><a href="#arid-regions" id="toc-arid-regions" class="nav-link" data-scroll-target="#arid-regions">Arid Regions</a></li>
   <li><a href="#urban-birders" id="toc-urban-birders" class="nav-link" data-scroll-target="#urban-birders">Urban Birders</a></li>
   <li><a href="#influence-of-climate-between-season-and-bioregion" id="toc-influence-of-climate-between-season-and-bioregion" class="nav-link" data-scroll-target="#influence-of-climate-between-season-and-bioregion">Influence of Climate between Season and Bioregion</a></li>
+  <li><a href="#final-thoughts" id="toc-final-thoughts" class="nav-link" data-scroll-target="#final-thoughts">Final Thoughts</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -164,7 +165,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">March 11, 2025</p>
+      <p class="date-modified">March 13, 2025</p>
     </div>
   </div>
     
@@ -33350,6 +33351,28 @@ sample estimates:
 </div>
 </div>
 <p>The results show a p-value of 0.0004, meaning that the difference in bird counts between the two groups is statistically significant.</p>
+<p>To go a step further, I wanted to reassess the previous plot that compares bird counts based on both bioregion and survey year by using the full data set.</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>bird_baths <span class="sc">|&gt;</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(bioregions)) <span class="sc">|&gt;</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(survey_year)) <span class="sc">|&gt;</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(bird_count <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">x =</span> bird_count, <span class="at">y =</span> bioregions, <span class="at">fill =</span> bioregions)) <span class="sc">+</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bird Count by Bioregion and Year"</span>,</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Number of Birds"</span>,</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Region"</span>) <span class="sc">+</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> survey_year) <span class="sc">+</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_discrete</span>() <span class="sc">+</span></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="BirdBaths_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Like the previous plots, this one closely resembles the plot made in the EDA. In 2014, winter in Australia, birds using baths were observed in only 5 bioregions: the Sydney Basin, SE Queensland, SE Highlands, SE Coastal Plain, and NSW South Western Slopes. In comparison, the observations in Australian summer are distributed throughout all the bioregions included in the study, and the observations were spread more evenly throughout the regions.</p>
 </section>
 </section>
 <section id="conclusions" class="level2">
@@ -33363,16 +33386,15 @@ sample estimates:
 <section id="urban-birders" class="level3">
 <h3 class="anchored" data-anchor-id="urban-birders">Urban Birders</h3>
 <p>My second hypothesis was that urban regions in the original data set would make up a larger proportion of observations since more human observers would be present to witness birds using bird baths. The analysis supported this hypothesis and showed that the difference in proportion between urban and rural observations was significant.</p>
-<p>(Compare observations to iNaturalist &amp; eBird figures)</p>
-<p>In addition to that metric, I also used visualization of Australia’s bioregions and compared them to the most populated cities.</p>
+<p>In addition to that metric, I wanted to include a visualization of Australia’s bioregions and compare them to the most populated cities.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><a href="https://www.dcceew.gov.au/sites/default/files/env/pages/5b3d2d31-2355-4b60-820c-e370572b2520/files/ibra-regions.pdf"><img src="ibra-regions.jpg" class="img-fluid figure-img"></a></p>
 <figcaption class="figure-caption">IBRA7 Bioregions <span class="citation" data-cites="RefWorks:2023ibra">(<a href="#ref-RefWorks:2023ibra" role="doc-biblioref">2023</a>)</span></figcaption>
 </figure>
 </div>
-<p>Here is the national division of Australia’s bioregions according to the IBRA7. Some of the most populace cities are labeled in the image, like Sydney in it’s eponymous basin and Brisbane in SE Queensland.</p>
-<p>As a comparison, I used figures based on data from iNaturalist and eBird to compare how common bird observations were across different areas of Australia. Both maps were created from data collected by both on-going projects between 2014 and 2015</p>
+<p>Here is the national division of Australia’s bioregions according to the IBRA7. Some of the most populated cities are labeled in the image, like Sydney in it’s eponymous basin and Brisbane in SE Queensland.</p>
+<p>In addition, I referenced figures based on data from iNaturalist and eBird, other large-scale collaborative projects dependent on individual observations, to compare how common bird observations were across different areas of Australia. Both maps were created from data collected by citizen scientists in Australia of birds (not specifically bird bath usage) between 2014 and 2015.</p>
 <div class="quarto-layout-panel">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
@@ -33393,10 +33415,16 @@ sample estimates:
 </div>
 </div>
 </div>
+<p>The larger and darker circles on each map represent higher concentrations of observations. The largest cities in particular are visible on the iNaturalist map based on these circles, with the three largest ones on the east coast being Brisbane, Sydney, and Melbourne while following the coast clockwise. These locations correlate to large bird counts in their respective bioregions: SE Queensland for Brisbane, the Sydney Basin for Sydney, and, to a lesser extent, the SE Coastal Plain for Melbourne. eBird has a similar distribution, with most observations concentrated on the east coast of the country, but there are a greater number of large circles throughout the region. This may represent some of the less popular but still urban or suburban regions of the area and may contribute to the bird counts of regions like the SE Highlands that neighbor both Melbourne and Sydney.</p>
+<p>Overall, there does seem to be a bias in observations in highly populated areas. Instead of deducing that most birds happen to be in areas with large human populations, the fact that these observations are from citizen scientists could suggest that a good part of these observations are incidental i.e.&nbsp;made when participants came across birds in day-to-day activities rather than seeking them out in more obscure locations. Therefore, using this data to make any broad conclusions about birds in more remote areas, like the desert-like regions of western side of the country, would be inappropriate. Recognizing these factors when choosing data is an important key to starting a robust analysis.</p>
 </section>
 <section id="influence-of-climate-between-season-and-bioregion" class="level3">
 <h3 class="anchored" data-anchor-id="influence-of-climate-between-season-and-bioregion">Influence of Climate between Season and Bioregion</h3>
-<p>(Research migration patterns? or behvior variation between locations &amp; season)</p>
+<p>Between the two periods of observation, there were similar numbers of birds in both periods with a 52/48 split between the total bird count in each category. Although 2014 saw more birds using baths in total by a slim, but statistically significant, margin, the bigger difference lies in how bird count varies by region when splitting the counts by when they were taken. Observations from 2014 (in winter) were only occurring in 5 bioregions while observations in 2015 (in summer) occurred in all of the included bioregions. My initial hypothesis was that birds might be migrating throughout within the country to a few regions in the winter and then spread more evenly throughout the country in summer, but</p>
+</section>
+<section id="final-thoughts" class="level3">
+<h3 class="anchored" data-anchor-id="final-thoughts">Final Thoughts</h3>
+<p>This investigation using others’ data was eye-opening and engaging. Based on this analysis alone, I could imagine a number of follow-up questions and investigations that could be started based on mine, and its clear how having data like this open to public use by others is beneficial; other scientist may think of use cases that the original researchers never considered and find a new way to contribute to the field’s body of knowledge.</p>
 </section>
 </section>
 <section id="references" class="level2">

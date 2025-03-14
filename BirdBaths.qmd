@@ -566,11 +566,9 @@ year_results
 ```
 The results show a p-value of 0.0004, meaning that the difference in bird counts between the two groups is statistically significant.
 
+To go a step further, I wanted to reassess the previous plot that compares bird counts based on both bioregion and survey year by using the full data set.
 
 ```{r}
-#| eval: false
-#| echo: false
-
 bird_baths |>
   filter(!is.na(bioregions)) |>
   filter(!is.na(survey_year)) |>
@@ -585,6 +583,7 @@ bird_baths |>
   guides(fill = "none")
 ```
 
+Like the previous plots, this one closely resembles the plot made in the EDA. In 2014, winter in Australia, birds using baths were observed in only 5 bioregions: the Sydney Basin, SE Queensland, SE Highlands, SE Coastal Plain, and NSW South Western Slopes. In comparison, the observations in Australian summer are distributed throughout all the bioregions included in the study, and the observations were spread more evenly throughout the regions. 
 
 ## Conclusions
 
@@ -622,11 +621,11 @@ Overall, there does seem to be a bias in observations in highly populated areas.
 
 ### Influence of Climate between Season and Bioregion
 
-(Research migration patterns? or behvior variation between locations & season)
+Between the two periods of observation, there were similar numbers of birds in both periods with a 52/48 split between the total bird count in each category. Although 2014 saw more birds using baths in total by a slim, but statistically significant, margin, the bigger difference lies in how bird count varies by region when splitting the counts by when they were taken. Observations from 2014 (in winter) were only occurring in 5 bioregions while observations in 2015 (in summer) occurred in all of the included bioregions. My initial hypothesis was that birds might be migrating throughout within the country to a few regions in the winter and then spread more evenly throughout the country in summer. While writing, I considered the fact that it was possible observations might be low for some areas since climate varied between different bioregions, meaning birds might have less use for an artificial water source. However, in that case, there would likely be at least a few sightings as birds might incidentally use bird baths anyway. It seems more reasonable that a complete lack of any bird bath usage indicates an absence of birds that instead resident in those bioregions at a different time of year. 
 
 ### Final Thoughts
 
-
+This investigation using others' data was eye-opening and engaging. Based on this analysis alone, I could imagine a number of follow-up questions and investigations that could be started based on mine, and its clear how having data like this open to public use by others is beneficial; other scientist may think of use cases that the original researchers never considered and find a new way to contribute to the field's body of knowledge. 
 
 ## References
 
