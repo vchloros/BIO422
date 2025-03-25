@@ -4,7 +4,11 @@ format: html
 editor: visual
 ---
 
+This exercise brought me through the process of making phylogenetic trees in R. 
+
 ```{r setup}
+#| message: false
+
 library(rbioinfcookbook)
 library(SGSeq)
 library(ape)
@@ -12,6 +16,10 @@ library(treeio)
 library(ggplot2)
 library(ggtree)
 ```
+
+## File Functionality
+
+Files for phylo trees can come in several different file types when working in R. Two of these are newick and nexus, which may be the most common.
 
 ```{r read in objects}
 newick_file_path <- fs::path_package("extdata", "mammal_tree.nwk", package = "rbioinfcookbook" )
@@ -22,6 +30,8 @@ newick <- ape::read.tree(newick_file_path)
 nexus <- ape::read.nexus(nexus_file_path)
 ```
 
+BEAST and RAxML are two software programs used to produce trees from genetic data. They have their own unique file types that can be read with certain packages.
+
 ```{r BEAST RAxML}
 beast_file_path <- fs::path_package("extdata", "beast_mcc.tree", package = "rbioinfcookbook")
 
@@ -31,15 +41,85 @@ beast <- read.beast(beast_file_path)
 raxml <- read.raxml(raxml_file_path)
 ```
 
+Using the `class()` function (native to R), I can figure out what type of data each object is holding. This is important to distinguish when you're pulling from different file types.
+
 ```{r check object}
 class(newick)
 class(nexus)
 class(beast)
 class(raxml)
 ```
+Newick and nexus are holding phylo objects, and beast and raxml are holding treedata objects that depend on the tidytree package.
+
+The two can be interchangable since there are treeio functions that can convert phylo objects to treedata or vice versa. 
 
 ```{r interchange}
 beast_phylo <- treeio::as.phylo(beast)
 newick_tidytree <- treeio::as.treedata(newick)
+```
+
+Lastly, I can use `write.beast()` or `write.nexus()` to make new files, exporting the converted newick data as a beast file and the converted beast data as a newick file.
+
+This process can make R an easy intermediary when using different software to compare generated trees with one another.
+
+```{r write files}
+treeio::write.beast(newick_tidytree, file = "mammal_tree.beast")
+ape::write.nexus(beast_phylo, file = "beast_mcc.nexus")
+```
+
+![IToL Produced Tree](itol_vis.svg){.lightbox}
+
+After uploading the data to IToL, this is the figure that was produced.
+
+## Tree Visualization in R
+
+```{r import itol}
+tree_file <- fs::path_package("extdata", "itol.nwk", package = "rbioinfcookbook")
+
+itol<- ape::read.tree(tree_file)
+```
+
+```{r visualize itol}
+ggtree(itol)
+```
+
+```{r}
+itol |>
+  ggtree() + 
+  geom_tiplab(color = "blue", size = 1)
+```
+
+```{r circular}
+itol |> 
+  ggtree(layout = "circular") + 
+  geom_tiplab(color = "blue", size = 2)
+```
+
+```{r tree flip}
+ggtree(itol) +
+  coord_flip() +
+  scale_x_reverse()
+```
+
+```{r unrooted}
+ggtree(itol, layout = "unrooted")
+```
+
+### Visualizing Smaller Trees
+
+```{r}
+mammal_file <- fs::path_package("extdata", "mammal_tree.nwk", package = "rbioinfcookbook" )
+
+mammal<- ape::read.tree(mammal_file)
+```
+
+```{r}
+ggtree(mammal) +
+  geom_tiplab(color = "blue", size = 2)
+```
+
+```{r}
+ggtree(mammal, layout = "circular") +
+  geom_tiplab(color = "blue", size = 2)
 ```
 
