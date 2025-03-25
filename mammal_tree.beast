@@ -1,0 +1,27 @@
+#NEXUS
+[R-package treeio, Tue Mar 25 12:42:25 2025]
+
+BEGIN TAXA;
+	DIMENSIONS NTAX = 7;
+	TAXLABELS
+		Bovine
+		Hylobates
+		Pongo
+		'G._Gorilla'
+		'P._paniscus'
+		'H._sapiens'
+		Rodent
+	;
+END;
+BEGIN TREES;
+	TRANSLATE
+		1	Bovine,
+		2	Hylobates,
+		3	Pongo,
+		4	'G._Gorilla',
+		5	'P._paniscus',
+		6	'H._sapiens',
+		7	Rodent
+	;
+	TREE * UNTITLED = [&U] (1:0.69395,(2:0.36079,(3:0.33636,(4:0.17147,(5:0.19268,6:0.11927):0.08386):0.06124):0.15057):0.54939,7:1.2146);
+END;
