@@ -69,7 +69,7 @@ ape::write.nexus(beast_phylo, file = "beast_mcc.nexus")
 
 ![IToL Produced Tree](itol_vis.svg){.lightbox}
 
-After uploading the data to IToL, this is the figure that was produced.
+After uploading the data to IToL, this is the figure that was produced. You can see that rodents and bovines serve as a root to the apes displayed. The next most distant group pictured is *Hylobates*, a genera of gibbons. Next is *Pongo*, or orangutans, followed by *Gorilla gorilla*, *Pan paniscus* (bonobos), and finally *Homo sapiens*.
 
 ## Tree Visualization in R
 
