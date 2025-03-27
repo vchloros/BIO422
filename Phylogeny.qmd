@@ -67,11 +67,13 @@ treeio::write.beast(newick_tidytree, file = "mammal_tree.beast")
 ape::write.nexus(beast_phylo, file = "beast_mcc.nexus")
 ```
 
-![IToL Produced Tree](itol_vis.svg){.lightbox}
+![IToL Produced Tree](itol_vis.png){.lightbox}
 
 After uploading the data to IToL, this is the figure that was produced. You can see that rodents and bovines serve as a root to the apes displayed. The next most distant group pictured is *Hylobates*, a genera of gibbons. Next is *Pongo*, or orangutans, followed by *Gorilla gorilla*, *Pan paniscus* (bonobos), and finally *Homo sapiens*.
 
 ## Tree Visualization in R
+
+Once you have your tree file, there are many different ways to visualize it depending on what information you're trying to convey. 
 
 ```{r import itol}
 tree_file <- fs::path_package("extdata", "itol.nwk", package = "rbioinfcookbook")
@@ -79,27 +81,36 @@ tree_file <- fs::path_package("extdata", "itol.nwk", package = "rbioinfcookbook"
 itol<- ape::read.tree(tree_file)
 ```
 
+The easiest way to start is simply applying `ggtree()` to our tree file object.
+
 ```{r visualize itol}
 ggtree(itol)
 ```
+In the produced tree, we get the shape of the relationship between these different organisms, but no clue on which species is which.
+
+We can add some parameters to produce labels for the tips of the trees:
 
 ```{r}
 itol |>
   ggtree() + 
   geom_tiplab(color = "blue", size = 1)
 ```
+These are still difficult to read due to the size of the tree. We can convert it to a different format commonly used for larger trees: circular!
 
 ```{r circular}
 itol |> 
   ggtree(layout = "circular") + 
   geom_tiplab(color = "blue", size = 2)
 ```
+If you want to flip the direction of the tree, you can with a `coord_flip()` function.
 
 ```{r tree flip}
 ggtree(itol) +
   coord_flip() +
   scale_x_reverse()
 ```
+
+You can also make an unrooted tree from the same data if you prefer by specifying your desired layout. 
 
 ```{r unrooted}
 ggtree(itol, layout = "unrooted")
@@ -113,13 +124,17 @@ mammal_file <- fs::path_package("extdata", "mammal_tree.nwk", package = "rbioinf
 mammal<- ape::read.tree(mammal_file)
 ```
 
+Back to our smaller mammal tree, we can get a better view of the relationship between these animals using `ggtree()` instead of relying on external resources. 
+
 ```{r}
 ggtree(mammal) +
   geom_tiplab(color = "blue", size = 2)
 ```
+We can visualize the same relationships seen in the itol tree, but you don't have to worry about exporting and uploading your data. You can even alter how you display your tree using the parameters we used earlier. Here's a circular tree to illustrate:
 
 ```{r}
 ggtree(mammal, layout = "circular") +
   geom_tiplab(color = "blue", size = 2)
 ```
 
+This was a fun exercise in seeing what is possible with R in terms of displaying phylogenetic trees. Here, I've only visualized trees with given data instead of generating them from the ground up, which I've been introduced to through other projects. In the future, I'd like to make a more throrough guide on how to make phylogenetic trees completely in R, from aligning sequences to visualizing.
