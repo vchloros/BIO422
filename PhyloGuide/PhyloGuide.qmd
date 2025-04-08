@@ -1,0 +1,56 @@
+---
+title: "A Guide to Phylogenetic Analysis in R"
+author: 
+  - name: Vinny Chloros
+    email: vinny.chloros@snhu.edu
+    affiliations: 
+      - name: Southern New Hampshire University
+date: 4/8/2025
+date-modified: today
+date-format: long
+code-fold: show
+toc: true
+csl: apa.csl
+bibliography: phylo_refs.bib
+format: html
+editor: visual
+---
+
+```{r}
+#| message: false
+
+library(BiocManager)
+library(ape)
+library(msa)
+library(phangorn)
+library(ggtree)
+
+```
+
+## Introduction
+
+
+
+## Sequence Alignment in MSA
+
+When aligning sequences, there are a few things you might need to prep outside of R before you're ready to import your data. You'll need a set of sequences that you plan to draw a tree from, and as you're starting out, and you'll want to ensure that all your sequences are using the same gene. 
+
+```{r}
+felidaeSequences <- readAAStringSet("UnalignedFelidae.fas")
+
+felidaeSequences
+```
+Here, you can see a subset of samples from the Felidae sequences. The first few sets of nucleotides are found under "seq" for each species. 
+
+## Tree Construction with Phangorn
+
+
+
+## Tree Visualization with ggtree
+
+
+
+## References
+
+::: {#refs}
+:::
