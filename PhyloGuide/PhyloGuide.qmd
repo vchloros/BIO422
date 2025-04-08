@@ -29,8 +29,12 @@ library(ggtree)
 
 ## Introduction
 
+There are three major steps to phylogenetic analysis:
 
-
+  + Multiple sequence alignment: comparing the similarities between sequences and adjusting them to line up mathcing nucleotides
+  + Construct tree: identify differences between aligned sequences 
+  + Visualize tree: 
+  
 ## Sequence Alignment in MSA
 
 When aligning sequences, there are a few things you might need to prep outside of R before you're ready to import your data. You'll need a set of sequences that you plan to draw a tree from, and as you're starting out, and you'll want to ensure that all your sequences are using the same gene. 
@@ -41,6 +45,15 @@ felidaeSequences <- readAAStringSet("UnalignedFelidae.fas")
 felidaeSequences
 ```
 Here, you can see a subset of samples from the Felidae sequences. The first few sets of nucleotides are found under "seq" for each species. 
+
+For a basic alignment, the function `msa` can be used. This will perform a ClustalW alignment with default settings. 
+
+```{r}
+felidaeAlignment <- msa(felidaeSequences)
+
+felidaeAlignment
+```
+
 
 ## Tree Construction with Phangorn
 
