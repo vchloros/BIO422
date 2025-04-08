@@ -1,5 +1,5 @@
 ---
-title: "Australian Bird Baths"
+title: "Australian Bird Baths Analysis"
 format: html
 editor: visual
 author: 
@@ -26,14 +26,13 @@ library(kableExtra)
 library(patchwork)
 ```
 
-
 ## Abstract
 
-This bird bath data from Cleary et al, 2016 is a collaborative effort between researchers and citizen scientists to track activity in bird baths throughout Australia. Because of the arid conditions in most of the region, bird baths might prove to be a vital resource for birds who rely on them as a water source. 
+This bird bath data from Cleary et al, 2016 is a collaborative effort between researchers and citizen scientists to track activity in bird baths throughout Australia. Because of the arid conditions in most of the region, bird baths might prove to be a vital resource for birds who rely on them as a water source.
 
 ## Introduction
 
-Bird baths are a common outdoor fixture used to provide a small pool of water for birds (and other backyard visitors) to use. It's not uncommon to see birds using a bird bath, but the scientific understanding for how, when, and why they use baths, at the time of this study, was not fully understood. To remedy this, a group of researchers used citizen scientists (i.e. members of the public collaborating with professionals) to collect data on birds they observed using bird baths throughout different areas of Australia. The study was conceptualized by researchers at Deakin University and Griffith University, and the data was collected over two four-week periods: one in 2014 in winter, and the other in 2015 in summer. In the data set, observations are classified by the year they took place, whether the location was urban or rural based on human population size, what region it took place in (delineated by a mixture of location, climate, and other environmental factors), bird type (species), and bird count. 
+Bird baths are a common outdoor fixture used to provide a small pool of water for birds (and other backyard visitors) to use. It's not uncommon to see birds using a bird bath, but the scientific understanding for how, when, and why they use baths, at the time of this study, was not fully understood. To remedy this, a group of researchers used citizen scientists (i.e. members of the public collaborating with professionals) to collect data on birds they observed using bird baths throughout different areas of Australia. The study was conceptualized by researchers at Deakin University and Griffith University, and the data was collected over two four-week periods: one in 2014 in winter, and the other in 2015 in summer. In the data set, observations are classified by the year they took place, whether the location was urban or rural based on human population size, what region it took place in (delineated by a mixture of location, climate, and other environmental factors), bird type (species), and bird count.
 
 ```{r initial data}
 #| message: false
@@ -59,7 +58,7 @@ test_data <- testing(birds_splits)
 
 2.  Are more birds spotted in urban or rural locations?
 
-1.  How does climate factor into bird bath usage?
+3.  How does climate factor into bird bath usage?
 
 ## Exploratory Data Analysis (EDA)
 
@@ -150,8 +149,8 @@ exploratory_data |>
   kable_styling(bootstrap_options = "striped") |>
   scroll_box(height = "300px")
 ```
-</br>
-I can get more particular and filter out the results with only one bird sighting.
+
+</br> I can get more particular and filter out the results with only one bird sighting.
 
 ```{r more than one bird}
 exploratory_data |>
@@ -161,8 +160,8 @@ exploratory_data |>
   kable_styling(bootstrap_options = "striped") |>
   scroll_box(height = "300px")
 ```
-</br>
-This code came up with a huge list of regions and years that come up with NA. To try to see more, I filtered out values that returned NA...
+
+</br> This code came up with a huge list of regions and years that come up with NA. To try to see more, I filtered out values that returned NA...
 
 ```{r more birds no NA}
 exploratory_data |>
@@ -186,8 +185,8 @@ exploratory_data |>
   kable_styling(bootstrap_options = "striped") |>
   scroll_box(height = "300px")
 ```
-</br>
-Here they are! It seems like there are many instances of birds spotted, but the regions and survey year were unknown. In further plots, since I'm focused on examining how region variables like region, urban status, and season/year, I'll be excluding observations that lack information for all three of them.
+
+</br> Here they are! It seems like there are many instances of birds spotted, but the regions and survey year were unknown. In further plots, since I'm focused on examining how region variables like region, urban status, and season/year, I'll be excluding observations that lack information for all three of them.
 
 ### Starting Plots, Single Variable by Count
 
@@ -229,8 +228,8 @@ exploratory_data |>
   filter(!is.na(bioregions)) |>
   summarize(sum(bird_count, na.rm = TRUE))
 ```
-</br>
-Success! From this graph, we can see that the largest amount of birds were seen in the Sydney Basin, which makes up around 37% of all the observations. In comparison, South Eastern Queensland (SE Queensland) has the next largest amount of sightings with just over half the amount of birds (~22% of the data). Brigalow Belt South and Victorian Volcano Plain were almost tied for the least amount of birds, only differing by 2 sightings (both around 2%).
+
+</br> Success! From this graph, we can see that the largest amount of birds were seen in the Sydney Basin, which makes up around 37% of all the observations. In comparison, South Eastern Queensland (SE Queensland) has the next largest amount of sightings with just over half the amount of birds (\~22% of the data). Brigalow Belt South and Victorian Volcano Plain were almost tied for the least amount of birds, only differing by 2 sightings (both around 2%).
 
 ```{r year}
 exploratory_data |>
@@ -263,7 +262,6 @@ exploratory_data |>
   filter(!is.na(survey_year)) |>
   summarize(sum(bird_count, na.rm = TRUE))
 ```
-
 
 Between the two years, 2014 saw more birds than 2015 by a slim margin. 2014 sightings represent 54% of the sightings while 2015 represents the other 46%. Despite the different seasons, it seems like the total amount of birds did not vary by much.
 
@@ -310,7 +308,6 @@ exploratory_data |>
 ```
 
 By comparing bioregions by year, there is a clear difference in distribution. In 2014, in winter, there were only a 5 bioregions that observations took place. Sydney Basin observations made up the majority of the 2014 bird count with over 700 birds tracked (around half of all 2014 observations). In contrast, 2015 featured observations of birds from every bioregion. The Sydney Basin is accompanied by SE Queensland and SE Highlands as the most common bioregions, with around 200 observations each.
-
 
 ```{r region and urbanity}
 exploratory_data |>
@@ -366,11 +363,11 @@ This plot encompasses all of the variables used in analysis so far. The observat
 
 ## Hypotheses
 
-1. Arid regions like the Sydney Basin see more bird bath usage because of their dry conditions.
+1.  Arid regions like the Sydney Basin see more bird bath usage because of their dry conditions.
 
-2. Urban areas have more observations than rural areas because of the number of birdwatchers available.
+2.  Urban areas have more observations than rural areas because of the number of birdwatchers available.
 
-3. Bird bath usage is limited to a few bioregions in winter and varies more widely in summer due to the migration of birds and their water usage varying by season.
+3.  Bird bath usage is limited to a few bioregions in winter and varies more widely in summer due to the migration of birds and their water usage varying by season.
 
 ## Methodology
 
@@ -435,12 +432,12 @@ bird_baths |>
   filter(!is.na(bioregions)) |>
   summarize(sum(bird_count, na.rm = TRUE))
 ```
-</br>
-To analyze how regions influenced observations, I created new plots based on the ones I used in my EDA. I used the full data set for each and applied filters that excluded the observations that lacked a value for bioregion or had a bird count of 0.
 
-The total distribution of birds by region is extremely similar to that of the EDA data. Sydney Basin is again the region with the largest sum of bird observations, making up about 35% of the data (very similar to the ~37% of the EDA data). SE Queensland is the runner-up once again with around 21% of the data, one point off from the previous ~22%. SE Highlands and NSW North Coast are the next runners up, both with around 11% of the total observations.
+</br> To analyze how regions influenced observations, I created new plots based on the ones I used in my EDA. I used the full data set for each and applied filters that excluded the observations that lacked a value for bioregion or had a bird count of 0.
 
-To add a quantitative comparison of the data, I conducted a quick chi-squared test to see if the variation between bioregions was statistically significant. 
+The total distribution of birds by region is extremely similar to that of the EDA data. Sydney Basin is again the region with the largest sum of bird observations, making up about 35% of the data (very similar to the \~37% of the EDA data). SE Queensland is the runner-up once again with around 21% of the data, one point off from the previous \~22%. SE Highlands and NSW North Coast are the next runners up, both with around 11% of the total observations.
+
+To add a quantitative comparison of the data, I conducted a quick chi-squared test to see if the variation between bioregions was statistically significant.
 
 ```{r}
 clean_birdbaths <- bird_baths |>
@@ -457,6 +454,7 @@ regions_chi_result
 
 regions_chi_result$p.value
 ```
+
 I isolated the bioregions variable from the rest of the data set and created a table for the test to use containing only the bioregions and their individual bird counts. The test compares the given values to an even distribution (the expected value). My test returned with a p-test value of 0 meaning that the variation of bird counts between bioregions is statistically significant.
 
 ### Urban vs Rural Observations
@@ -483,8 +481,8 @@ bird_baths |>
   kbl() |>
   kable_styling(bootstrap_options = "striped")
 ```
-</br>
-Like bioregions, the plot of urban and rural observations is almost identical to the one made in the EDA. Urban observations make up about 60% of the observations while rural observations are about 40%. This perfectly matches the proportions seen in the EDA. 
+
+</br> Like bioregions, the plot of urban and rural observations is almost identical to the one made in the EDA. Urban observations make up about 60% of the observations while rural observations are about 40%. This perfectly matches the proportions seen in the EDA.
 
 ```{r}
 #| echo: false
@@ -505,6 +503,7 @@ urban_results
 
 urban_results$p.value
 ```
+
 This proportion test does confirm that the proportion of urban observances is statistically significant with a p-value of about 3.57e-53.
 
 ### Seasonal Variability
@@ -555,7 +554,7 @@ bird_baths |>
   summarize(sum(bird_count, na.rm = TRUE))
 ```
 
-Again, the difference between the number of observations in each year reflects what was observed within the EDA. More birds were observed in the winter of 2014 (~52%) than the summer of 2015 (~48%). Compared to the 54/46 split in the EDA, they are almost identical. 
+Again, the difference between the number of observations in each year reflects what was observed within the EDA. More birds were observed in the winter of 2014 (\~52%) than the summer of 2015 (\~48%). Compared to the 54/46 split in the EDA, they are almost identical.
 
 I conducted another proportion test to see if the variation of bird counts was statistically significant.
 
@@ -564,6 +563,7 @@ year_results <- prop.test(x = 2904, n = 5545, p = 0.5, correct = FALSE)
 
 year_results
 ```
+
 The results show a p-value of 0.0004, meaning that the difference in bird counts between the two groups is statistically significant.
 
 To go a step further, I wanted to reassess the previous plot that compares bird counts based on both bioregion and survey year by using the full data set.
@@ -583,7 +583,7 @@ bird_baths |>
   guides(fill = "none")
 ```
 
-Like the previous plots, this one closely resembles the plot made in the EDA. In 2014, winter in Australia, birds using baths were observed in only 5 bioregions: the Sydney Basin, SE Queensland, SE Highlands, SE Coastal Plain, and NSW South Western Slopes. In comparison, the observations in Australian summer are distributed throughout all the bioregions included in the study, and the observations were spread more evenly throughout the regions. 
+Like the previous plots, this one closely resembles the plot made in the EDA. In 2014, winter in Australia, birds using baths were observed in only 5 bioregions: the Sydney Basin, SE Queensland, SE Highlands, SE Coastal Plain, and NSW South Western Slopes. In comparison, the observations in Australian summer are distributed throughout all the bioregions included in the study, and the observations were spread more evenly throughout the regions.
 
 ## Conclusions
 
@@ -591,7 +591,7 @@ Like the previous plots, this one closely resembles the plot made in the EDA. In
 
 Both the EDA and the actual data analysis seemed to agree that total bird count varies significantly between different regions. My original hypothesis for this was that the aridity of regions contributed to high bird counts because birds would have less natural water sources and instead rely on bird baths placed by humans. To have a point of reference, I looked into data from the Interim Biogeographic Regionalisation for Australia (IBRA) report from the Australian government which designates the different bioregions of the country.
 
-According to IBRA7, the latest version, the Sydney Basin is described as having "desiccated plateaus" and "skeletal soils, sands, and podzolics" [-@RefWorks:2023ibra]. Desiccated means dried or having had water removed while "skeletal" when used in terms of soil or other ground material means that its largely made of rock fragments [@RefWorks:2019skeletal]. Based on these factors, we can assume that the Sydney Basin is unlikely to have many available water features. Bird baths thus create a reliable source of water for many birds living in the region. 
+According to IBRA7, the latest version, the Sydney Basin is described as having "desiccated plateaus" and "skeletal soils, sands, and podzolics" [-@RefWorks:2023ibra]. Desiccated means dried or having had water removed while "skeletal" when used in terms of soil or other ground material means that its largely made of rock fragments [@RefWorks:2019skeletal]. Based on these factors, we can assume that the Sydney Basin is unlikely to have many available water features. Bird baths thus create a reliable source of water for many birds living in the region.
 
 Other areas with high bird counts differ from the Sydney Basin. The SE Highlands and the NSW North Coast are described as humid by IBRA but also host different woodlands, rainforests, or wetlands [-@RefWorks:2023ibra]. The higher temperatures of these areas might make bird baths convenient water sources, but they might play a smaller role for them than they do for birds in more arid areas.
 
@@ -601,18 +601,16 @@ My second hypothesis was that urban regions in the original data set would make 
 
 In addition to that metric, I wanted to include a visualization of Australia's bioregions and compare them to the most populated cities.
 
-[![IBRA7 Bioregions [-@RefWorks:2023ibra]](ibra-regions.jpg)](https://www.dcceew.gov.au/sites/default/files/env/pages/5b3d2d31-2355-4b60-820c-e370572b2520/files/ibra-regions.pdf)
+[![IBRA7 Bioregions ](ibra-regions.jpg)](https://www.dcceew.gov.au/sites/default/files/env/pages/5b3d2d31-2355-4b60-820c-e370572b2520/files/ibra-regions.pdf)
 
-Here is the national division of Australia's bioregions according to the IBRA7. Some of the most populated cities are labeled in the image, like Sydney in it's eponymous basin and Brisbane in SE Queensland. 
+Here is the national division of Australia's bioregions according to the IBRA7. Some of the most populated cities are labeled in the image, like Sydney in it's eponymous basin and Brisbane in SE Queensland.
 
 In addition, I referenced figures based on data from iNaturalist and eBird, other large-scale collaborative projects dependent on individual observations, to compare how common bird observations were across different areas of Australia. Both maps were created from data collected by citizen scientists in Australia of birds (not specifically bird bath usage) between 2014 and 2015.
 
-::: {layout-ncol=2}
-
+::: {layout-ncol="2"}
 ![eBird Map [-@eBird]](eBirdMap.png)
 
 ![iNaturalist Map [-@iNat]](iNaturalistMap.png)
-
 :::
 
 The larger and darker circles on each map represent higher concentrations of observations. The largest cities in particular are visible on the iNaturalist map based on these circles, with the three largest ones on the east coast being Brisbane, Sydney, and Melbourne while following the coast clockwise. These locations correlate to large bird counts in their respective bioregions: SE Queensland for Brisbane, the Sydney Basin for Sydney, and, to a lesser extent, the SE Coastal Plain for Melbourne. eBird has a similar distribution, with most observations concentrated on the east coast of the country, but there are a greater number of large circles throughout the region. This may represent some of the less popular but still urban or suburban regions of the area and may contribute to the bird counts of regions like the SE Highlands that neighbor both Melbourne and Sydney.
@@ -621,11 +619,11 @@ Overall, there does seem to be a bias in observations in highly populated areas.
 
 ### Influence of Climate between Season and Bioregion
 
-Between the two periods of observation, there were similar numbers of birds in both periods with a 52/48 split between the total bird count in each category. Although 2014 saw more birds using baths in total by a slim, but statistically significant, margin, the bigger difference lies in how bird count varies by region when splitting the counts by when they were taken. Observations from 2014 (in winter) were only occurring in 5 bioregions while observations in 2015 (in summer) occurred in all of the included bioregions. My initial hypothesis was that birds might be migrating throughout within the country to a few regions in the winter and then spread more evenly throughout the country in summer. While writing, I considered the fact that it was possible observations might be low for some areas since climate varied between different bioregions, meaning birds might have less use for an artificial water source. However, in that case, there would likely be at least a few sightings as birds might incidentally use bird baths anyway. It seems more reasonable that a complete lack of any bird bath usage indicates an absence of birds that instead resident in those bioregions at a different time of year. 
+Between the two periods of observation, there were similar numbers of birds in both periods with a 52/48 split between the total bird count in each category. Although 2014 saw more birds using baths in total by a slim, but statistically significant, margin, the bigger difference lies in how bird count varies by region when splitting the counts by when they were taken. Observations from 2014 (in winter) were only occurring in 5 bioregions while observations in 2015 (in summer) occurred in all of the included bioregions. My initial hypothesis was that birds might be migrating throughout within the country to a few regions in the winter and then spread more evenly throughout the country in summer. While writing, I considered the fact that it was possible observations might be low for some areas since climate varied between different bioregions, meaning birds might have less use for an artificial water source. However, in that case, there would likely be at least a few sightings as birds might incidentally use bird baths anyway. It seems more reasonable that a complete lack of any bird bath usage indicates an absence of birds that instead resident in those bioregions at a different time of year.
 
 ### Final Thoughts
 
-This investigation using others' data was eye-opening and engaging. Based on this analysis alone, I could imagine a number of follow-up questions and investigations that could be started based on mine, and its clear how having data like this open to public use by others is beneficial; other scientist may think of use cases that the original researchers never considered and find a new way to contribute to the field's body of knowledge. 
+This investigation using others' data was eye-opening and engaging. Based on this analysis alone, I could imagine a number of follow-up questions and investigations that could be started based on mine, and its clear how having data like this open to public use by others is beneficial; other scientist may think of use cases that the original researchers never considered and find a new way to contribute to the field's body of knowledge.
 
 ## References
 
